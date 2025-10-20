@@ -1,4 +1,3 @@
-// src/pages/Login/Login.tsx
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
@@ -30,10 +29,10 @@ export type Reserva = {
 	id: number
 	fecha_entrada?: string | null
 	fecha_salida?: string | null
+	personas?: number | null            // 👈 NUEVO
 	alojamiento?: { id: number; nombre?: string | null; foto1?: string | null } | null
 }
 
-// 👇 Este es el shape que espera ActividadesList:
 export type ActividadItem = {
 	id: number
 	fecha: string | null
@@ -76,8 +75,6 @@ export default function LoginPage() {
 
 	const [pedidos, setPedidos] = useState<Pedido[]>([])
 	const [reservas, setReservas] = useState<Reserva[]>([])
-
-	// 👇 Tipo alineado con ActividadesList
 	const [actividades, setActividades] = useState<ActividadItem[]>([])
 
 	const initialTab = (localStorage.getItem(TAB_KEY) as Tab) || 'pedidos'
@@ -124,19 +121,20 @@ export default function LoginPage() {
 			.eq('user_id', userId)
 			.order('fecha_pedido', { ascending: false })
 
-		// RESERVAS (con foto1 e id para link)
+		// RESERVAS (añadimos personas)
 		const reservasQ = supabase
 			.from('reservas')
 			.select(`
         id,
         fecha_entrada,
         fecha_salida,
+        personas,
         alojamiento:alojamientos!alojamiento_id ( id, nombre, foto1 )
       `)
 			.eq('user_id', userId)
 			.order('fecha_entrada', { ascending: false })
 
-		// ACTIVIDADES (foto de actividad y hora seleccionada)
+		// ACTIVIDADES
 		const actividadesQ = supabase
 			.from('user_packs')
 			.select(`
@@ -170,6 +168,7 @@ export default function LoginPage() {
 			id: row.id,
 			fecha_entrada: row.fecha_entrada ?? null,
 			fecha_salida: row.fecha_salida ?? null,
+			personas: row.personas ?? null, // 👈 NUEVO
 			alojamiento: row.alojamiento ? {
 				id: row.alojamiento.id,
 				nombre: row.alojamiento.nombre ?? null,
@@ -177,7 +176,6 @@ export default function LoginPage() {
 			} : null,
 		})))
 
-		// 👇 mapeo alineado con ActividadesList (fecha => string | null)
 		setActividades((actividadesRes.data ?? []).map((row: any) => ({
 			id: row.id,
 			fecha: row.fecha ?? null,
