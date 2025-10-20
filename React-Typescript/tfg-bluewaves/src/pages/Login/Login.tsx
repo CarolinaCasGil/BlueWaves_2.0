@@ -1,3 +1,4 @@
+// src/pages/Login/Login.tsx
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
@@ -29,13 +30,13 @@ export type Reserva = {
 	id: number
 	fecha_entrada?: string | null
 	fecha_salida?: string | null
-	personas?: number | null
 	alojamiento?: { id: number; nombre?: string | null; foto1?: string | null } | null
 }
 
-export type Actividad = {
+// 👇 Este es el shape que espera ActividadesList:
+export type ActividadItem = {
 	id: number
-	fecha?: string | null
+	fecha: string | null
 	cant_pers?: number | null
 	pack?: {
 		id: number
@@ -75,7 +76,9 @@ export default function LoginPage() {
 
 	const [pedidos, setPedidos] = useState<Pedido[]>([])
 	const [reservas, setReservas] = useState<Reserva[]>([])
-	const [actividades, setActividades] = useState<Actividad[]>([])
+
+	// 👇 Tipo alineado con ActividadesList
+	const [actividades, setActividades] = useState<ActividadItem[]>([])
 
 	const initialTab = (localStorage.getItem(TAB_KEY) as Tab) || 'pedidos'
 	const [tab, setTab] = useState<Tab>(initialTab)
@@ -121,20 +124,19 @@ export default function LoginPage() {
 			.eq('user_id', userId)
 			.order('fecha_pedido', { ascending: false })
 
-		// RESERVAS: traemos id y foto1 del alojamiento para linkear y mostrar portada
+		// RESERVAS (con foto1 e id para link)
 		const reservasQ = supabase
 			.from('reservas')
 			.select(`
         id,
         fecha_entrada,
         fecha_salida,
-		personas,
         alojamiento:alojamientos!alojamiento_id ( id, nombre, foto1 )
       `)
 			.eq('user_id', userId)
 			.order('fecha_entrada', { ascending: false })
 
-		// ACTIVIDADES: traemos foto de la actividad (vía pack.actividad) y la hora seleccionada
+		// ACTIVIDADES (foto de actividad y hora seleccionada)
 		const actividadesQ = supabase
 			.from('user_packs')
 			.select(`
@@ -164,12 +166,10 @@ export default function LoginPage() {
 			producto: asOne(row.producto),
 		})))
 
-		// mapeo de reservas: añade personas
 		setReservas((reservasRes.data ?? []).map((row: any) => ({
 			id: row.id,
 			fecha_entrada: row.fecha_entrada ?? null,
 			fecha_salida: row.fecha_salida ?? null,
-			personas: row.personas ?? null,
 			alojamiento: row.alojamiento ? {
 				id: row.alojamiento.id,
 				nombre: row.alojamiento.nombre ?? null,
@@ -177,7 +177,7 @@ export default function LoginPage() {
 			} : null,
 		})))
 
-
+		// 👇 mapeo alineado con ActividadesList (fecha => string | null)
 		setActividades((actividadesRes.data ?? []).map((row: any) => ({
 			id: row.id,
 			fecha: row.fecha ?? null,
@@ -303,6 +303,7 @@ export default function LoginPage() {
 						)}
 					</article>
 
+					{/* DERECHA: Datos (tabs) */}
 					<article className="loginp-card loginp-card--data">
 						<div className="loginp-tabs">
 							<button className={`loginp-tab ${tab === 'pedidos' ? 'is-active' : ''}`} onClick={() => setTab('pedidos')} type="button">Mis pedidos</button>
@@ -310,17 +311,14 @@ export default function LoginPage() {
 							<button className={`loginp-tab ${tab === 'actividades' ? 'is-active' : ''}`} onClick={() => setTab('actividades')} type="button">Mis actividades</button>
 						</div>
 
-						<div className="loginp-scroll">
-							{tab === 'pedidos' && (<PedidosList items={pedidos} fmtDate={fmtDate} />)}
-							{tab === 'reservas' && (<ReservasList items={reservas} fmtDate={fmtDate} rangeDates={rangeDates} />)}
-							{tab === 'actividades' && (<ActividadesList items={actividades} fmtDate={fmtDate} />)}
-
-						</div>
+						{tab === 'pedidos' && (<PedidosList items={pedidos} fmtDate={fmtDate} />)}
+						{tab === 'reservas' && (<ReservasList items={reservas} fmtDate={fmtDate} rangeDates={rangeDates} />)}
+						{tab === 'actividades' && (<ActividadesList items={actividades} fmtDate={fmtDate} />)}
 					</article>
-
 				</div>
 			</section>
 
+			{/* MODAL de edición */}
 			{perfil && (
 				<EditProfileModal
 					open={modalOpen}
