@@ -1,0 +1,171 @@
+.bw-dp {
+	font-family: inherit;
+	color: var(--ink, #0f172a);
+}
+
+/* ----- barra superior con fechas elegidas y flechas ----- */
+.bw-dp__toolbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 10px;
+}
+
+.bw-dp__chosen {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.bw-dp__chip {
+	display: inline-flex;
+	align-items: center;
+	min-width: 110px;
+	height: 60px;
+	padding: 0 10px;
+	border-radius: 10px;
+	border: 1px dashed #d1d5db;
+	background: #fff;
+	font-weight: 700;
+	font-size: 13px;
+	color: #64748b;
+}
+
+.bw-dp__chip.is-set {
+	border-style: solid;
+	border-color: #0ea5e9;
+	color: #0f172a;
+}
+
+.bw-dp__sep {
+	font-weight: 900;
+	opacity: .7;
+}
+
+.bw-dp__navgroup {
+	display: inline-flex;
+	gap: 6px;
+}
+
+.bw-dp__nav {
+	border: 1px solid #e5e7eb;
+	background: #fff;
+	border-radius: 10px;
+	width: 34px;
+	height: 34px;
+	cursor: pointer;
+	font-size: 18px;
+	line-height: 1;
+}
+
+.bw-dp__nav:hover {
+	background: #f8fafc;
+}
+
+/* ----- layout de los dos meses ----- */
+.bw-dp__months {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 24px;
+}
+
+/* “cajas” de calendario (como en el boceto) */
+.bw-dp__monthwrap {
+	background: #fff;
+	border: 2px solid #e5e7eb;
+	border-radius: 14px;
+	padding: 10px 12px;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, .03);
+}
+
+/* cabecera de cada mes */
+.bw-dp__head {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 8px;
+}
+
+.bw-dp__month {
+	font-weight: 900;
+	letter-spacing: .01em;
+	text-transform: capitalize;
+}
+
+/* grid días */
+.bw-dp__grid {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	gap: 6px;
+}
+
+.bw-dp__dow {
+	text-align: center;
+	font-size: 11px;
+	font-weight: 800;
+	color: #94a3b8;
+	padding-bottom: 2px;
+}
+
+.bw-dp__cell {
+	height: 34px;
+	border-radius: 10px;
+	border: 1px solid #e5e7eb;
+	background: #fff;
+	font-weight: 800;
+	font-size: 12px;
+	cursor: pointer;
+	display: grid;
+	place-items: center;
+}
+
+.bw-dp__cell:hover {
+	background: #f8fafc;
+}
+
+.bw-dp__cell.is-empty {
+	border: none;
+	background: transparent;
+	cursor: default;
+}
+
+/* Fechas bloqueadas (RLS/Reservas) -> gris oscuro y sin interacción */
+.bw-dp__cell.is-disabled {
+	background: #e5e7eb;
+	border-color: #e5e7eb;
+	color: #6b7280;
+	cursor: not-allowed;
+}
+
+/* Rango seleccionado */
+.bw-dp__cell.in-range {
+	background: #e0f2fe;
+	border-color: #bae6fd;
+}
+
+/* inicio/fin del rango (marcado fuerte) */
+.bw-dp__cell.is-from,
+.bw-dp__cell.is-to {
+	background: #0ea5e9;
+	color: #fff;
+	border-color: #0284c7;
+}
+
+/* ---- variante inline (ya lo usas dentro del card de Reserva) ---- */
+.bw-dp--inline {
+	width: 100%;
+}
+
+/* ------------------ Responsive ------------------ */
+@media (max-width: 900px) {
+	.bw-dp__months {
+		grid-template-columns: 1fr;
+		/* un mes debajo del otro */
+		gap: 16px;
+	}
+
+	.bw-dp__chip {
+		min-width: 96px;
+	}
+}

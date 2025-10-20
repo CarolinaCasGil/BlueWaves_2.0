@@ -1,0 +1,80 @@
+/* Modal base (fondo blanco) */
+.bw-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 60;
+}
+
+.bw-modal__backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(17, 24, 39, .45);
+}
+
+.bw-modal__card {
+	position: absolute;
+	inset: 0;
+	margin: auto;
+	background: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 16px;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, .15);
+	width: min(720px, calc(100% - 24px));
+	max-height: min(84vh, 420px);
+	display: grid;
+	grid-template-rows: auto 1fr;
+	overflow: hidden;
+}
+
+.bw-modal__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 14px 16px;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.bw-modal__header h2 {
+	margin: 0;
+	font-size: 18px;
+	color: #0f172a;
+}
+
+.bw-modal__close {
+	appearance: none;
+	border: 0;
+	background: transparent;
+	font-size: 24px;
+	line-height: 1;
+	cursor: pointer;
+	color: #6b7280;
+}
+
+.bw-modal__body {
+	padding: 16px;
+	overflow: auto;
+	/* scroll solo dentro del modal si hace falta */
+	background: #fff;
+}
+
+.bw-formgrid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+}
+
+@media (max-width: 720px) {
+	.bw-formgrid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Reutilizamos tus estilos de labels/inputs (.auth__label) */
+
+.bw-modal__footer {
+	display: flex;
+	gap: 10px;
+	justify-content: flex-end;
+	padding-top: 10px;
+	border-top: 1px solid #e5e7eb;
+}

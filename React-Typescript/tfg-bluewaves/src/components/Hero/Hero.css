@@ -1,0 +1,295 @@
+/* HERO full-screen */
+.hero {
+	padding: 0;
+	background: transparent;
+}
+
+.hero--fullscreen {
+	position: relative;
+	min-height: 95vh;
+	display: grid;
+}
+
+.hero__bg {
+	position: absolute;
+	inset: 0;
+	background-image: url('https://okrgjysrqapvwahrsecp.supabase.co/storage/v1/object/sign/Fotos%20proyecto/Variado/fondopag.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85MWM4NzMwYy05MmI5LTRmMzUtOTNmOC04MTk1MGM4NzQyM2IiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJGb3RvcyBwcm95ZWN0by9WYXJpYWRvL2ZvbmRvcGFnLmpwZWciLCJpYXQiOjE3NjA0NTY0NjAsImV4cCI6MTQxOTA2NDQwNDYwfQ.k6g76K2YPojVh1kTEUVZQXpwtrEyy2AQlUfsErZx6cA');
+	background-size: cover;
+	background-position: center;
+	transform: scale(1.02);
+	filter: brightness(0.85);
+}
+
+.hero__overlay {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(180deg, rgba(2, 6, 23, 0.55) 0%, rgba(2, 6, 23, 0.35) 35%, rgba(2, 6, 23, 0.25) 60%, rgba(2, 6, 23, 0.35) 100%);
+}
+
+.hero__container {
+	position: relative;
+	z-index: 1;
+	height: 100%;
+	display: grid;
+	align-items: center;
+}
+
+.hero__grid {
+	display: grid;
+	grid-template-columns: 1.1fr 1fr;
+	gap: 24px;
+	align-items: center;
+}
+
+@media (max-width: 960px) {
+	.hero__grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.badges {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 12px;
+	flex-wrap: wrap;
+}
+
+.hero .badges .badge {
+	padding: 6px 10px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 700;
+}
+
+.hero .badges .badge--light {
+	background: rgba(255, 255, 255, .88);
+	color: #0a0a0a;
+	letter-spacing: .02em;
+}
+
+.hero .badges .badge--blue {
+	background: rgba(14, 165, 233, .95);
+	color: #fff;
+}
+
+.hero .badges .badge--green {
+	background: rgba(16, 185, 129, .95);
+	color: #fff;
+}
+
+.hero__title {
+	font-size: clamp(28px, 4.2vw, 44px);
+	font-weight: 900;
+	letter-spacing: -0.03em;
+	margin: 0;
+}
+
+.hero__subtitle {
+	margin: 12px 0 0;
+	color: var(--brand-ink);
+	line-height: 1.55;
+	max-width: 56ch;
+}
+
+.hero__title--invert {
+	color: #fff;
+	text-shadow: 0 2px 12px rgba(0, 0, 0, .35);
+}
+
+.hero__subtitle--invert {
+	color: rgba(255, 255, 255, .92);
+}
+
+.hero__ctas {
+	display: flex;
+	gap: 12px;
+	margin-top: 18px;
+}
+
+.features {
+	display: flex;
+	gap: 14px;
+	margin-top: 14px;
+	color: rgba(255, 255, 255, .9);
+	font-weight: 600;
+	flex-wrap: wrap;
+}
+
+/* Buscador */
+.search {
+	margin-top: 18px;
+	background: rgba(255, 255, 255, 0.806);
+	border: 1px solid var(--border);
+	border-radius: 14px;
+	padding: 10px;
+	display: grid;
+	grid-template-columns: 1.2fr 1fr 1fr auto;
+	gap: 8px;
+	backdrop-filter: blur(6px);
+	max-width: 720px;
+}
+
+.search input {
+	border: 1px solid #e5e7eb;
+	border-radius: 10px;
+	padding: 10px 12px;
+}
+
+.search select {
+	border: 1px solid #e5e7eb;
+	border-radius: 10px;
+	padding: 10px 12px;
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+}
+
+@media (max-width: 720px) {
+	.search {
+		grid-template-columns: 1fr;
+	}
+}
+
+.stats {
+	background: rgba(255, 255, 255, .92);
+	border: 1px solid var(--border);
+	border-radius: 18px;
+	padding: 16px;
+	min-width: 280px;
+	box-shadow: var(--shadow);
+	backdrop-filter: blur(6px);
+}
+
+.stats__grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 12px;
+}
+
+.stats__number {
+	font-size: 20px;
+	font-weight: 900;
+	line-height: 1;
+}
+
+.stats__label {
+	font-size: 12px;
+	color: var(--muted);
+}
+
+.stats__cta {
+	margin-top: 10px;
+	display: flex;
+	gap: 8px;
+}
+
+.scrollhint {
+	position: absolute;
+	left: 50%;
+	bottom: 20px;
+	transform: translateX(-50%);
+	color: rgba(255, 255, 255, .9);
+	text-decoration: none;
+	font-weight: 700;
+	display: grid;
+	place-items: center;
+	row-gap: 6px;
+}
+
+.scrollhint__icon {
+	font-size: 20px;
+}
+
+/* === Botones vistosos específicos del HERO === */
+.hero__ctas .btn {
+	--hero-radius: 14px;
+	--hero-pad-y: 12px;
+	--hero-pad-x: 18px;
+	--hero-shadow: 0 10px 20px rgba(0, 0, 0, .25), 0 4px 10px rgba(0, 0, 0, .25);
+	border-radius: var(--hero-radius);
+	padding: var(--hero-pad-y) var(--hero-pad-x);
+	font-weight: 900;
+	letter-spacing: .02em;
+	transform: translateZ(0);
+	/* evita blur en hover en algunos navegadores */
+	transition: transform .15s ease, box-shadow .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+}
+
+/* Primary con degradado oceánico + brillo sutil */
+.hero__ctas .btn.btn--primary {
+	--g1: #22d3ee;
+	/* cyan-400 */
+	--g2: #2563eb;
+	/* indigo-600 */
+	background: linear-gradient(135deg, var(--g1), var(--g2));
+	color: #fff;
+	border: 0;
+	box-shadow: var(--hero-shadow), 0 0 0 1px rgba(255, 255, 255, .06) inset, 0 0 22px rgba(34, 211, 238, .35);
+}
+
+.hero__ctas .btn.btn--primary:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--hero-shadow), 0 0 28px rgba(34, 211, 238, .45);
+	filter: saturate(1.08);
+}
+
+.hero__ctas .btn.btn--primary:active {
+	transform: translateY(0);
+}
+
+.hero__ctas .btn.btn--primary:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(34, 211, 238, .55), var(--hero-shadow);
+}
+
+/* Ghost invert: borde y texto blancos; hover “rellena” con blanco translúcido */
+.hero__ctas .btn.btn--ghost.btn--ghost-invert {
+	background: rgba(255, 255, 255, .08);
+	color: #fff;
+	border: 2px solid rgba(255, 255, 255, .9);
+	box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+}
+
+.hero__ctas .btn.btn--ghost.btn--ghost-invert:hover {
+	background: rgba(255, 255, 255, .18);
+	transform: translateY(-2px);
+}
+
+.hero__ctas .btn.btn--ghost.btn--ghost-invert:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(255, 255, 255, .6), 0 6px 18px rgba(0, 0, 0, .3);
+}
+
+/* Ligeramente más grandes en desktop; full width en móvil si quieres */
+@media (min-width: 961px) {
+	.hero__ctas .btn {
+		--hero-pad-y: 14px;
+		--hero-pad-x: 22px;
+	}
+}
+
+@media (max-width: 560px) {
+	.hero__ctas {
+		flex-direction: column;
+	}
+
+	.hero__ctas .btn {
+		width: 100%;
+		text-align: center;
+	}
+}
+
+/* (Opcional) sutil “glow” del bloque de CTAs sobre fondo oscuro */
+.hero__ctas {
+	position: relative;
+}
+
+.hero__ctas::after {
+	content: "";
+	position: absolute;
+	inset: -8px -10px;
+	pointer-events: none;
+	background: radial-gradient(60% 60% at 50% 50%, rgba(34, 211, 238, .18), transparent 70%);
+	filter: blur(8px);
+	z-index: -1;
+}

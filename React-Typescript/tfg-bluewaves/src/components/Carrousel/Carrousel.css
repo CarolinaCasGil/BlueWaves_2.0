@@ -1,0 +1,60 @@
+.carousel {
+	position: relative;
+	height: 200px;
+	background: #f3f4f6;
+}
+
+.carousel__viewport {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	position: relative;
+}
+
+.carousel__track {
+	display: flex;
+	height: 100%;
+	transition: transform .45s ease-in-out;
+	will-change: transform;
+}
+
+.carousel__slide {
+	height: 100%;
+	flex: 0 0 auto;
+}
+
+.carousel__slide img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+/* flechas sin fondo ni borde */
+.carousel__arrow {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background: transparent;
+	border: none;
+	box-shadow: none;
+	cursor: pointer;
+	user-select: none;
+	color: #ffffff;
+	font-size: 32px;
+	line-height: 1;
+	padding: 6px;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, .6);
+}
+
+.carousel__arrow:hover {
+	transform: translateY(-50%) scale(1.04);
+}
+
+.carousel__arrow--left {
+	left: 8px;
+}
+
+.carousel__arrow--right {
+	right: 8px;
+}

@@ -1,0 +1,179 @@
+/* Bloquear scroll solo en esta pantalla */
+.no-scroll {
+	overflow: hidden;
+}
+
+/* Página compacta sin huecos grandes, fondo blanco (tema del sitio) */
+.auth.auth--compact {
+	min-height: 100dvh;
+	background: #fff;
+	/* fondo blanco */
+	display: grid;
+	align-items: center;
+	/* centra verticalmente la tarjeta */
+	padding: 12px 0;
+	/* margen pequeño para no pegarse a bordes */
+}
+
+/* Contenedor principal */
+.auth__wrap {
+	display: grid;
+	place-items: center;
+}
+
+/* Tarjeta */
+.auth__card {
+	width: 100%;
+	max-width: 720px;
+	/* compacto */
+	background: #ffffff;
+	border: 1px solid var(--border, #e5e7eb);
+	border-radius: 16px;
+	box-shadow: var(--shadow, 0 6px 24px rgba(2, 6, 23, .06));
+	padding: 16px;
+}
+
+.auth__title {
+	margin: 0 0 8px;
+	font-size: clamp(20px, 2.6vw, 28px);
+	font-weight: 900;
+	letter-spacing: -0.02em;
+}
+
+/* Tabs */
+.auth__tabs {
+	display: inline-flex;
+	gap: 6px;
+	background: #f1f5f9;
+	border-radius: 999px;
+	padding: 4px;
+	margin: 10px 0 12px;
+}
+
+.auth__tabs button {
+	border: none;
+	background: transparent;
+	padding: 8px 12px;
+	border-radius: 999px;
+	font-weight: 800;
+	cursor: pointer;
+	color: #0f172a;
+}
+
+.auth__tabs button.is-active {
+	background: #0ea5e9;
+	color: #fff;
+}
+
+/* Grid de campos */
+.auth__grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+	margin-bottom: 10px;
+}
+
+.auth__grid--cols2 {
+	grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 640px) {
+
+	.auth__grid,
+	.auth__grid--cols2 {
+		grid-template-columns: 1fr;
+	}
+}
+
+.auth__pwrow {
+	margin-top: 4px;
+}
+
+/* Etiquetas / inputs */
+.auth__label {
+	display: grid;
+	gap: 6px;
+	font-weight: 800;
+	color: #0f172a;
+	margin-bottom: 10px;
+}
+
+.auth__label input {
+	border: 1px solid #e5e7eb;
+	border-radius: 10px;
+	padding: 10px 12px;
+	outline: none;
+	background: #fff;
+}
+
+.auth__label input:focus {
+	border-color: #0ea5e9;
+	box-shadow: 0 0 0 3px rgba(14, 165, 233, .15);
+}
+
+/* Mensajes */
+.auth__msg {
+	margin: 8px 0 0;
+	border-radius: 10px;
+	padding: 10px 12px;
+	font-weight: 700;
+	font-size: 13px;
+}
+
+.auth__msg--ok {
+	background: #ecfeff;
+	color: #075985;
+	border: 1px solid #a5f3fc;
+}
+
+.auth__msg--err {
+	background: #fff1f2;
+	color: #9f1239;
+	border: 1px solid #fecdd3;
+}
+
+/* CTAs */
+.auth__ctas {
+	display: flex;
+	gap: 10px;
+	justify-content: flex-end;
+	margin-top: 12px;
+}
+
+/* Botones base (usa tus utilidades si ya las tienes) */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 12px;
+	padding: 10px 14px;
+	border: 1px solid transparent;
+	cursor: pointer;
+	text-decoration: none;
+	font-weight: 800;
+}
+
+.btn--primary {
+	background: #0ea5e9;
+	color: #fff;
+}
+
+.btn--primary:hover {
+	filter: brightness(0.97);
+}
+
+.btn--ghost {
+	background: #fff;
+	color: #0f172a;
+	border: 1px solid #e5e7eb;
+}
+
+.btn--ghost:hover {
+	background: #f8fafc;
+}
+
+/* Ajuste container en esta página para no crear espacios extra */
+.container {
+	width: min(1100px, 100% - 24px);
+	margin: 0 auto;
+}

@@ -1,0 +1,50 @@
+.app__header {
+	position: sticky;
+	top: 0;
+	z-index: 20;
+	background: #ffffffcc;
+	backdrop-filter: blur(8px);
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.app__nav {
+	height: 60px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.brand {
+	font-weight: 900;
+	letter-spacing: -0.02em;
+	text-decoration: none;
+	color: #0a0a0a;
+}
+
+.links a {
+	color: #0a0a0a;
+	text-decoration: none;
+	font-weight: 600;
+	margin-left: 16px;
+}
+
+.links a:hover {
+	text-decoration: underline;
+}
+
+.app__footer {
+	margin-top: 40px;
+	padding: 20px 0;
+	border-top: 1px solid #e5e7eb;
+	color: #6b7280;
+}
+
+/* Helpers */
+.container {
+	width: min(1120px, 92%);
+	margin-inline: auto;
+}
+
+.pad {
+	padding: 28px 0;
+}

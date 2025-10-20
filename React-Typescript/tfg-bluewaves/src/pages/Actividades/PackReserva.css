@@ -1,0 +1,363 @@
+.packres__hero {
+	padding: 28px 0;
+	background: #fff;
+}
+
+.packres__title {
+	font-size: 28px;
+	margin: 0;
+}
+
+.packres__sub {
+	margin-top: 6px;
+	color: #6b7280;
+}
+
+.packres__wrap {
+	padding: 24px 0 40px;
+}
+
+.packres__grid {
+	display: grid;
+	grid-template-columns: 1.2fr .8fr;
+	gap: 24px;
+}
+
+@media (max-width: 960px) {
+	.packres__grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.packres-card {
+	background: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 16px;
+	padding: 16px;
+}
+
+.packres-card__title {
+	margin: 0 0 12px;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.packres-card--summary {
+	align-self: start;
+}
+
+.packres__rows {
+	display: grid;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.packres-row {
+	display: grid;
+	grid-template-columns: 140px 1fr;
+	gap: 12px;
+}
+
+.packres-row__label {
+	color: #6b7280;
+}
+
+.packres-row__value {
+	font-weight: 600;
+}
+
+.packres__people {
+	margin: 12px 0 18px;
+	max-width: 260px;
+}
+
+.packres__classes {
+	margin-top: 12px;
+}
+
+.packres-sec__title {
+	font-size: 16px;
+	margin: 0 0 10px;
+	font-weight: 600;
+}
+
+.packres-classes {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: grid;
+	gap: 14px;
+}
+
+.packres-class {
+	border: 1px dashed #e5e7eb;
+	border-radius: 12px;
+	padding: 12px;
+}
+
+.packres-class__head {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 10px;
+}
+
+.badge {
+	display: inline-flex;
+	align-items: center;
+	padding: 4px 8px;
+	border-radius: 999px;
+	background: #f3f4f6;
+	font-size: 12px;
+}
+
+.packres-class__grid {
+	display: grid;
+	gap: 12px;
+	grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 640px) {
+	.packres-class__grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.packres-msg {
+	font-size: 14px;
+	color: #374151;
+	margin-top: 8px;
+}
+
+.packres-msg--err {
+	color: #b91c1c;
+}
+
+.packres__ctas {
+	margin-top: 16px;
+	display: flex;
+	gap: 12px;
+}
+
+.packres-summary {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: grid;
+	gap: 10px;
+}
+
+.packres-summary__item {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
+	gap: 12px;
+	padding: 8px 0;
+	border-bottom: 1px solid #f3f4f6;
+}
+
+.packres-summary__left {
+	display: grid;
+	gap: 2px;
+}
+
+.packres-summary__title {
+	font-weight: 600;
+}
+
+.packres-summary__meta {
+	display: flex;
+	gap: 6px;
+	color: #6b7280;
+	font-size: 14px;
+}
+
+.packres-summary__right {
+	font-weight: 600;
+}
+
+.packres-total {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
+	gap: 12px;
+	padding-top: 12px;
+	margin-top: 10px;
+	border-top: 1px solid #e5e7eb;
+}
+
+.packres-total__label {
+	color: #374151;
+	font-weight: 600;
+}
+
+.packres-total__value {
+	font-size: 18px;
+	font-weight: 700;
+}
+
+.packres-note {
+	color: #6b7280;
+	font-size: 13px;
+	margin-top: 6px;
+}
+
+/* Cabecera/estructura ya existentes en tu CSS previo... */
+
+.packres-steps__title {
+	font-weight: 700;
+	margin-bottom: 4px;
+}
+
+.packres-steps__subtitle {
+	color: #6b7280;
+	margin-bottom: 10px;
+}
+
+.packres__hora {
+	margin: 10px 0 6px;
+	max-width: 320px;
+}
+
+.packres-days {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 8px;
+	margin-top: 10px;
+}
+
+@media (min-width: 720px) {
+	.packres-days {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+@media (min-width: 1024px) {
+	.packres-days {
+		grid-template-columns: repeat(5, 1fr);
+	}
+}
+
+.packres-day {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	border: 1px solid #e5e7eb;
+	border-radius: 10px;
+	background: #fff;
+	padding: 8px;
+	font-size: 13px;
+	cursor: pointer;
+}
+
+.packres-day .date {
+	font-weight: 600;
+}
+
+.packres-day .cap {
+	color: #6b7280;
+	font-size: 12px;
+}
+
+.packres-day.is-active {
+	outline: 2px solid #3b82f6;
+	outline-offset: -2px;
+}
+
+.packres-day.is-disabled {
+	color: #9ca3af;
+	background: #f3f4f6;
+	cursor: not-allowed;
+	opacity: .7;
+}
+
+.packres-day.is-loading {
+	opacity: .5;
+	cursor: wait;
+}
+
+.packres-divider {
+	height: 1px;
+	background: #e5e7eb;
+	margin: 12px 0;
+}
+
+/* Toolbar del mes: flecha – mes – flecha en horizontal */
+.packres-month__toolbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 8px;
+}
+
+.packres-month__title {
+	font-weight: 600;
+	text-transform: capitalize;
+	white-space: nowrap;
+}
+
+/* Botones de mes (izq/der) */
+.packres-month__btn {
+	width: 36px;
+	height: 36px;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	background: #fff;
+	font-size: 18px;
+	line-height: 1;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.packres-month__btn:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+/* Ayuda bajo el control de personas */
+.packres-help {
+	font-size: 12px;
+	color: #6b7280;
+	margin-top: 4px;
+}
+
+/* (Por si no lo tenías) grid de calendario consistente */
+.bw-dp__grid {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	gap: 6px;
+}
+
+.bw-dp__dow {
+	font-size: 12px;
+	color: #6b7280;
+	text-align: center;
+}
+
+.bw-dp__cell {
+	min-height: 40px;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	background: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.bw-dp__cell.is-disabled {
+	opacity: 0.45;
+	pointer-events: none;
+}
+
+.bw-dp__cell.is-from {
+	outline: 2px solid #2563eb;
+}
+
+.bw-dp__cell.is-empty {
+	background: transparent;
+	border: none;
+}

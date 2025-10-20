@@ -1,0 +1,171 @@
+/* ===== Fondo y hero ===== */
+.prod {
+	color: var(--ink);
+	background:
+		radial-gradient(120% 80% at 50% -10%, rgba(14, 165, 233, .12), transparent 60%),
+		var(--page-bg);
+}
+
+.prod-hero {
+	position: relative;
+	background: linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(255, 255, 255, .78));
+	border-bottom: 1px solid rgba(255, 255, 255, .7);
+	padding-top: 18px;
+}
+
+.prod-hero__inner {
+	display: flex;
+	align-items: end;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.prod-title {
+	margin: 0;
+	font-size: clamp(24px, 3.6vw, 40px);
+	font-weight: 900;
+	letter-spacing: -0.02em;
+}
+
+.prod-sub {
+	margin: 6px 0 0;
+	color: var(--ocean-ink);
+}
+
+.prod-wave {
+	height: 32px;
+	overflow: hidden;
+}
+
+.prod-wave svg {
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+.prod-wave path {
+	fill: #fff;
+}
+
+/* ===== Filtros ===== */
+.prod-filters {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.prod-search input {
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	padding: 8px 10px;
+	width: 260px;
+	max-width: 70vw;
+	background: #fff;
+}
+
+.prod-chips {
+	display: inline-flex;
+	gap: 6px;
+	background: #fff;
+	border: 1px solid var(--border);
+	padding: 4px;
+	border-radius: 999px;
+}
+
+.prod-chips button {
+	border: none;
+	background: transparent;
+	padding: 6px 10px;
+	border-radius: 999px;
+	font-weight: 800;
+	cursor: pointer;
+	color: #111827;
+}
+
+.prod-chips button.is-active {
+	background: #111827;
+	color: #fff;
+}
+
+.prod-select {
+	display: inline-flex;
+	gap: 8px;
+	align-items: center;
+	font-weight: 800;
+	color: #111827;
+}
+
+.prod-select select {
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	padding: 8px 10px;
+	background: #fff;
+}
+
+.prod-price {
+	display: inline-flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.prod-price label {
+	display: inline-flex;
+	gap: 6px;
+	align-items: center;
+	font-weight: 800;
+}
+
+.prod-price input {
+	width: 90px;
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	padding: 8px 10px;
+	background: #fff;
+}
+
+/* ===== Grid de resultados ===== */
+.prod-grid {
+	display: grid;
+	gap: 18px;
+	padding: 18px 0 34px;
+	grid-template-columns: repeat(3, 1fr);
+}
+
+.prod-item {
+	height: 100%;
+}
+
+@media (max-width: 1024px) {
+	.prod-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 640px) {
+	.prod-hero__inner {
+		flex-direction: column;
+		align-items: start;
+	}
+
+	.prod-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* ===== Estados ===== */
+.state {
+	padding: 24px 0;
+	color: var(--muted);
+	text-align: center;
+}
+
+.state--error {
+	color: #b91c1c;
+}
+
+.empty {
+	text-align: center;
+	padding: 24px 0;
+	color: var(--muted);
+}

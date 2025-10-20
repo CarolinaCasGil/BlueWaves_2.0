@@ -1,0 +1,113 @@
+/* ===== Fondo y hero compacto ===== */
+.aloj-page {
+	color: var(--ink);
+	background:
+		radial-gradient(120% 80% at 50% -10%, rgba(14, 165, 233, .14), transparent 60%),
+		var(--page-bg);
+}
+
+.aloj-hero {
+	position: relative;
+	background: linear-gradient(180deg, rgba(255, 255, 255, .95), rgba(255, 255, 255, .75));
+	border-bottom: 1px solid rgba(255, 255, 255, .7);
+	padding-top: 20px;
+}
+
+.aloj-hero__inner {
+	display: flex;
+	align-items: end;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.aloj-title {
+	margin: 0;
+	font-size: clamp(24px, 3.6vw, 40px);
+	font-weight: 900;
+	letter-spacing: -0.02em;
+}
+
+.aloj-sub {
+	margin: 6px 0 0;
+	color: var(--ocean-ink);
+}
+
+.aloj-controls {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.selectlabel {
+	display: inline-flex;
+	gap: 8px;
+	align-items: center;
+	font-weight: 800;
+	color: #111827;
+}
+
+.selectlabel select {
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	padding: 8px 10px;
+	background: #fff;
+}
+
+.aloj-wave {
+	height: 32px;
+	overflow: hidden;
+}
+
+.aloj-wave svg {
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+.aloj-wave path {
+	fill: #ffffff;
+}
+
+/* ===== Grid ===== */
+.aloj-grid {
+	display: grid;
+	gap: 18px;
+	padding: 18px 0 34px;
+	grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 1024px) {
+	.aloj-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 640px) {
+	.aloj-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Ajuste de altura del media de la card reutilizable (AlojamientoCard) */
+.aloj-grid .bw-alojcard {
+	--bw-alojcard-media-h: 260px;
+	/* súbelo o bájalo si quieres más/menos foto */
+}
+
+/* ===== Estados ===== */
+.state {
+	padding: 24px 0;
+	color: var(--muted);
+	text-align: center;
+}
+
+.state--error {
+	color: #b91c1c;
+}
+
+.empty {
+	text-align: center;
+	padding: 24px 0;
+	color: var(--muted);
+}

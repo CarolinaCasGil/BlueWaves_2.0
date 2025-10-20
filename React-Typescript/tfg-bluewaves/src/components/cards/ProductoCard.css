@@ -1,0 +1,87 @@
+/* ===== Tarjeta de Producto (namespaced prodcard) ===== */
+.prodcard {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	border: 1px solid var(--border);
+	border-radius: 16px;
+	overflow: hidden;
+	background: #fff;
+	box-shadow: var(--shadow);
+	transition: transform .12s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.prodcard:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--shadow-deep);
+	border-color: #d1d5db;
+}
+
+.prodcard__media {
+	height: 220px;
+	background: #eef2f7;
+	overflow: hidden;
+}
+
+.prodcard__media img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	/* productos: quepan sin recortar */
+	display: block;
+	background: #fff;
+}
+
+.prodcard__ph {
+	height: 100%;
+	display: grid;
+	place-items: center;
+	color: #9ca3af;
+	font-size: 42px;
+}
+
+.prodcard__body {
+	display: grid;
+	gap: 10px;
+	padding: 14px;
+	flex: 1 1 auto;
+}
+
+.prodcard__title {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 900;
+	letter-spacing: -0.01em;
+	line-height: 1.3;
+}
+
+.prodcard__meta {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+.prodcard__price {
+	font-weight: 900;
+}
+
+.prodcard__stock {
+	background: #111827;
+	color: #fff;
+	border-radius: 999px;
+	padding: 4px 10px;
+	font-size: 12px;
+	font-weight: 800;
+}
+
+.prodcard__stock.is-low {
+	background: #b45309;
+	/* ámbar */
+}
+
+.prodcard__cta {
+	margin-top: auto;
+	display: flex;
+	justify-content: flex-end;
+}

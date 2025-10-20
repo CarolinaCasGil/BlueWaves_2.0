@@ -1,0 +1,162 @@
+:root {
+	--bg: #ffffff;
+	--ink: #0a0a0a;
+	--muted: #6b7280;
+	--border: #e5e7eb;
+	--brand: #0ea5e9;
+	--brand-ink: #0b4660;
+	--surface: #fafafa;
+	--shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+	--radius: 16px;
+}
+
+/* Layout base */
+.home {
+	background: var(--bg);
+	color: var(--ink);
+}
+
+.container {
+	width: min(1120px, 92%);
+	margin-inline: auto;
+}
+
+.section {
+	padding: 24px 0 40px;
+}
+
+.section__header {
+	display: flex;
+	align-items: end;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 16px;
+}
+
+.section__title {
+	font-size: clamp(20px, 2.2vw, 28px);
+	font-weight: 800;
+	letter-spacing: -0.02em;
+	margin: 0 0 2px;
+}
+
+.section__subtitle {
+	margin: 0;
+	color: var(--muted);
+	font-size: 14px;
+}
+
+/* Botones & links compartidos */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px 16px;
+	border-radius: 12px;
+	font-weight: 600;
+	text-decoration: none;
+	border: 1px solid transparent;
+	transition: transform .06s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+}
+
+.btn:hover {
+	transform: translateY(-1px);
+}
+
+.btn--primary {
+	background: #111827;
+	color: white;
+}
+
+.btn--primary:hover {
+	background: #0b1320;
+}
+
+.btn--ghost {
+	background: transparent;
+	color: #111827;
+	border-color: var(--border);
+}
+
+.btn--ghost:hover {
+	background: #f8fafc;
+}
+
+.btn--ghost-invert {
+	color: #fff;
+	border-color: rgba(255, 255, 255, .5);
+}
+
+.btn--link {
+	background: transparent;
+	color: #0a0a0a;
+	padding: 0;
+	border: none;
+	text-decoration: underline;
+}
+
+.btn--sm {
+	font-size: 13px;
+}
+
+.link {
+	color: #0a0a0a;
+	text-decoration: none;
+	font-weight: 600;
+}
+
+.link:hover {
+	text-decoration: underline;
+}
+
+/* Grid utilidades */
+.grid {
+	display: grid;
+	gap: 18px;
+}
+
+.grid--4 {
+	grid-template-columns: repeat(4, 1fr);
+}
+
+.grid--3 {
+	grid-template-columns: repeat(3, 1fr);
+}
+
+.grid>* {
+	height: 100%;
+}
+
+@media (max-width: 1024px) {
+	.grid--4 {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media (max-width: 800px) {
+	.grid--4 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.grid--3 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 560px) {
+
+	.grid--4,
+	.grid--3 {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Estados */
+.state {
+	padding: 24px 0;
+	color: var(--muted);
+}
+
+.state--error {
+	color: #b91c1c;
+}

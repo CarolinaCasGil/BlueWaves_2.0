@@ -1,0 +1,206 @@
+/* ===== Reset + tipografía ===== */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+	color: var(--ink);
+	background: var(--page-bg);
+	line-height: 1.45;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+}
+
+/* ===== Tema surf (variables) ===== */
+:root {
+	--ink: #0a0a0a;
+	--muted: #6b7280;
+	--border: #e5e7eb;
+
+	--ocean: #0ea5e9;
+	--ocean-deep: #0b4660;
+	--ocean-ink: #0b4660;
+
+	--surface: #fafafa;
+	--page-bg: linear-gradient(180deg, #ffffff, #f7fbff);
+
+	--shadow: 0 6px 24px rgba(0, 0, 0, .06);
+	--shadow-deep: 0 12px 36px rgba(2, 6, 23, .15);
+
+	--radius: 16px;
+
+	/* textura de agua (cámbiala por tu imagen real) */
+	--water-img: url('/waves-bg.jpg');
+}
+
+/* ===== Container ===== */
+.container {
+	width: min(1420px, 92%);
+	margin-inline: auto;
+}
+
+/* ===== Botones y links ===== */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px 16px;
+	border-radius: 12px;
+	font-weight: 700;
+	border: 1px solid transparent;
+	text-decoration: none;
+	transition: transform .06s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+
+.btn:hover {
+	transform: translateY(-1px);
+}
+
+.btn--primary {
+	background: #111827;
+	color: #fff;
+}
+
+.btn--primary:hover {
+	background: #0b1320;
+}
+
+.btn--ghost {
+	background: transparent;
+	color: #111827;
+	border: 1px solid var(--border);
+}
+
+.btn--ghost:hover {
+	background: #f8fafc;
+}
+
+.btn--link {
+	background: transparent;
+	color: var(--ink);
+	text-decoration: underline;
+	padding: 0;
+	border: none;
+}
+
+.btn--sm {
+	font-size: 13px;
+}
+
+/* ===== Títulos ===== */
+h1,
+h2,
+h3 {
+	letter-spacing: -0.02em;
+}
+
+h1 {
+	font-weight: 900;
+}
+
+/* ===== Utilidades grid/estado ===== */
+.grid {
+	display: grid;
+	gap: 18px;
+}
+
+.grid--3 {
+	grid-template-columns: repeat(3, 1fr);
+}
+
+.grid--4 {
+	grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1024px) {
+	.grid--4 {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media (max-width: 900px) {
+	.grid--3 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 560px) {
+
+	.grid--3,
+	.grid--4 {
+		grid-template-columns: 1fr;
+	}
+}
+
+.state {
+	padding: 24px 0;
+	color: var(--muted);
+}
+
+.state--error {
+	color: #b91c1c;
+}
+
+/* ===== Navbar base (si no tienes otro) ===== */
+.navbar {
+	position: sticky;
+	top: 0;
+	z-index: 50;
+	background: #ffffffcc;
+	backdrop-filter: blur(8px);
+	border-bottom: 1px solid var(--border);
+}
+
+.navbar .navbar__inner {
+	height: 60px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.navbar .brand {
+	font-weight: 900;
+	text-decoration: none;
+	color: var(--ink);
+}
+
+/* ===== Formularios base ===== */
+input,
+select,
+textarea {
+	font: inherit;
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	padding: 10px 12px;
+	background: #fff;
+	outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+	border-color: #94a3b8;
+	box-shadow: 0 0 0 3px rgba(148, 163, 184, .25);
+}
+
+/* ===== Footer ===== */
+.app__footer {
+	padding: 18px 0;
+	border-top: 1px solid var(--border);
+	color: var(--muted);
+}

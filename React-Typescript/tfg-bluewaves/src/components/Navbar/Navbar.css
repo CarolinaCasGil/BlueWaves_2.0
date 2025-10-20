@@ -1,0 +1,158 @@
+/* Base ya la aporta tu index.css (.navbar, .navbar__inner, .brand). Esto añade responsive y estados activos. */
+
+/* Enlaces */
+.nav-menu {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+}
+
+.nav-link {
+	position: relative;
+	text-decoration: none;
+	color: var(--ink);
+	font-weight: 700;
+	padding: 8px 6px;
+	border-radius: 8px;
+}
+
+.nav-link.active {
+	color: #111827;
+}
+
+.nav-link.active::after {
+	content: "";
+	position: absolute;
+	left: 10px;
+	right: 10px;
+	bottom: 4px;
+	height: 2px;
+	background: #111827;
+	border-radius: 2px;
+}
+
+/* CTA a la derecha */
+.nav-cta {
+	margin-left: 8px;
+}
+
+/* Hamburguesa */
+.hamburger {
+	display: none;
+	width: 40px;
+	height: 40px;
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	background: #fff;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+	flex-direction: column;
+}
+
+.hamburger span {
+	width: 20px;
+	height: 2px;
+	background: #111827;
+	transition: transform .2s ease, opacity .2s ease;
+}
+
+.hamburger.is-open span:nth-child(1) {
+	transform: translateY(6px) rotate(45deg);
+}
+
+.hamburger.is-open span:nth-child(2) {
+	opacity: 0;
+}
+
+.hamburger.is-open span:nth-child(3) {
+	transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+	.hamburger {
+		display: inline-flex;
+	}
+
+	.nav-menu {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 60px;
+		/* altura navbar de tu index.css */
+		background: #ffffffee;
+		backdrop-filter: blur(6px);
+		border-bottom: 1px solid var(--border);
+		display: grid;
+		gap: 8px;
+		padding: 10px;
+		transform-origin: top;
+		transform: scaleY(0);
+		opacity: 0;
+		pointer-events: none;
+		transition: transform .18s ease, opacity .18s ease;
+	}
+
+	.nav-menu.is-open {
+		transform: scaleY(1);
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.nav-cta {
+		margin: 6px 0 0;
+	}
+}
+
+
+/* Botón/icono de login en navbar */
+.bw-nav__actions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.bw-nav__iconbtn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 10px;
+	border-radius: 999px;
+	text-decoration: none;
+	color: #000000;
+	/* sobre fondo azul marino */
+	background: rgba(255, 255, 255, 0.08);
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	transition: transform .12s ease, background .2s ease, border-color .2s ease, opacity .2s ease;
+}
+
+.bw-nav__iconbtn:hover {
+	background: rgba(255, 255, 255, 0.14);
+	border-color: rgba(255, 255, 255, 0.3);
+	transform: translateY(-1px);
+}
+
+.bw-nav__icon {
+	width: 22px;
+	height: 22px;
+	display: block;
+}
+
+.bw-nav__iconlabel {
+	font-weight: 800;
+	letter-spacing: .01em;
+	line-height: 1;
+}
+
+/* Compacto en móvil: solo icono (opcional) */
+@media (max-width: 640px) {
+	.bw-nav__iconlabel {
+		display: none;
+	}
+
+	.bw-nav__iconbtn {
+		padding: 8px;
+		border-radius: 12px;
+	}
+}

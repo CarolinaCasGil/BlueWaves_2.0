@@ -1,0 +1,642 @@
+:root {
+	--bw-photo-h: 460px;
+	--bw-map-h: 420px;
+	--bw-photo-h-mobile: 320px;
+	--bw-map-h-mobile: 320px;
+}
+
+/* ---------- HERO ---------- */
+.bw-alojd__hero {
+	background: linear-gradient(180deg, #ffffff, #ffffffcc);
+	border-bottom: 1px solid var(--border);
+}
+
+.bw-alojd__heroInner {
+	display: flex;
+	align-items: end;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 18px 0;
+}
+
+.bw-alojd__title {
+	margin: 0;
+	font-size: clamp(24px, 3.6vw, 40px);
+	font-weight: 900;
+	letter-spacing: -.02em;
+}
+
+.bw-alojd__sub {
+	margin: 6px 0 0;
+	color: var(--ocean-ink);
+}
+
+/* ---------- GRID PRINCIPAL (desktop) ---------- */
+.bw-grid {
+	display: grid;
+	grid-template-columns: 98px minmax(0, 1.4fr) minmax(0, 1fr);
+	grid-template-rows: auto auto auto;
+	grid-template-areas:
+		"thumbs photo info"
+		"thumbs reserve map"
+		"thumbs reviews recos";
+	gap: 14px;
+	padding: 18px 0 28px;
+}
+
+/* Áreas */
+.bw-thumbs {
+	grid-area: thumbs;
+	display: grid;
+	gap: 8px;
+	align-content: start;
+}
+
+.bw-photo {
+	grid-area: photo;
+	position: relative;
+	height: var(--bw-photo-h);
+	background: #eef2f7;
+	border-radius: 18px;
+	overflow: hidden;
+	border: 1px solid var(--border);
+}
+
+.bw-photo img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.bw-ph {
+	width: 100%;
+	height: 100%;
+	display: grid;
+	place-items: center;
+	color: #9ca3af;
+	font-size: 64px;
+}
+
+.bw-info {
+	grid-area: info;
+}
+
+.bw-reserve {
+	grid-area: reserve;
+}
+
+.bw-map {
+	grid-area: map;
+}
+
+.bw-reviews {
+	grid-area: reviews;
+}
+
+.bw-recos {
+	grid-area: recos;
+}
+
+/* Thumbs */
+.bw-vthumb {
+	width: 100%;
+	height: 72px;
+	border-radius: 10px;
+	overflow: hidden;
+	background: transparent;
+	border: 2px solid transparent;
+	cursor: pointer;
+	transition: border-color .15s ease, transform .1s ease;
+	padding: 0;
+}
+
+.bw-vthumb:hover {
+	transform: translateY(-1px);
+}
+
+.bw-vthumb.is-active {
+	border-color: #0ea5e9;
+}
+
+.bw-vthumb img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.bw-vthumb.ph {
+	display: grid;
+	place-items: center;
+	color: #9ca3af;
+	border: 1px dashed #e5e7eb;
+	background: #f8fafc;
+}
+
+/* Flechas foto */
+.bw-nav {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	font-size: 38px;
+	line-height: 1;
+	color: #fff;
+	text-shadow: 0 2px 10px rgba(0, 0, 0, .45);
+}
+
+.bw-nav--left {
+	left: 12px;
+}
+
+.bw-nav--right {
+	right: 12px;
+}
+
+/* Cards base */
+.bw-card {
+	background: #fff;
+	border: 1px solid var(--border);
+	border-radius: 16px;
+	box-shadow: var(--shadow);
+	padding: 14px;
+}
+
+.bw-card__title {
+	margin: 0 0 8px;
+	font-size: 18px;
+	font-weight: 900;
+}
+
+/* Descripción (igual altura que foto) */
+/* ---- INFO CARD (misma altura que foto) ---- */
+.bw-infoCard {
+	height: var(--bw-photo-h);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+/* Encabezado con métrica rápida */
+.bw-infoCard__header {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 8px;
+	padding: 10px;
+	margin: -14px -14px 10px;
+	/* sangra para cubrir todo el ancho de la card */
+	background: linear-gradient(135deg, rgba(14, 165, 233, .12), rgba(14, 165, 233, .04));
+	border-bottom: 1px solid #e6eef7;
+}
+
+.bw-infoCard__stat {
+	background: #fff;
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	padding: 8px 10px;
+	display: grid;
+	gap: 4px;
+	text-align: center;
+}
+
+.bw-infoCard__stat .lbl {
+	font-size: 12px;
+	color: var(--muted);
+	line-height: 1;
+}
+
+.bw-infoCard__stat .val {
+	font-weight: 900;
+	font-size: 18px;
+}
+
+/* Contenido desplazable */
+.bw-infoCard__scroll {
+	overflow: auto;
+	min-height: 0;
+	display: grid;
+	gap: 12px;
+	align-content: start;
+}
+
+/* Chips debajo del header */
+.bw-chiplist {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+/* Descripción principal */
+.bw-desc {
+	margin: 0;
+	color: var(--muted);
+	line-height: 1.7;
+}
+
+/* Lista de highlights */
+.bw-featurelist {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: grid;
+	gap: 8px;
+}
+
+.bw-featurelist li {
+	position: relative;
+	padding-left: 20px;
+}
+
+.bw-featurelist li::before {
+	content: "✓";
+	position: absolute;
+	left: 0;
+	top: 0;
+	color: #059669;
+	/* verde surf */
+	font-weight: 900;
+}
+
+/* CTA secundaria dentro de la descripción */
+.bw-infoCard__ctas {
+	margin-top: 2px;
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+/* Responsive: en móvil el header pasa a 2/1 columnas y la card crece automática */
+@media (max-width: 980px) {
+	.bw-infoCard {
+		height: auto;
+		max-height: none;
+	}
+
+	.bw-infoCard__header {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 520px) {
+	.bw-infoCard__header {
+		grid-template-columns: 1fr;
+	}
+}
+
+
+.bw-infoCard__scroll {
+	overflow: auto;
+	min-height: 0;
+	display: grid;
+	gap: 10px;
+	align-content: start;
+}
+
+.bw-desc {
+	margin: 0;
+	color: var(--muted);
+	line-height: 1.7;
+}
+
+/* Reserva */
+.bw-reserve__head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+
+.bw-reserve__head .lbl {
+	font-size: 12px;
+	color: var(--muted);
+}
+
+.bw-reserve__head .val {
+	font-size: 20px;
+	font-weight: 900;
+}
+
+.bw-reserve__ctas {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+/* Mapa */
+.bw-mapwrap {
+	position: relative;
+	height: var(--bw-map-h);
+	border: 1px solid #e5e7eb;
+	border-radius: 12px;
+	overflow: hidden;
+}
+
+.bw-mapwrap iframe {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+.bw-mapwrap__empty {
+	display: grid;
+	place-items: center;
+	color: #6b7280;
+	height: 100%;
+}
+
+/* Reseñas */
+.bw-reviewsCard {
+	display: grid;
+	grid-template-rows: auto 1fr;
+	max-height: 370px;
+}
+
+.bw-reviews__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 2px;
+}
+
+.bw-reviews__meta {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.bw-reviews__avg {
+	font-weight: 900;
+	color: #f59e0b;
+}
+
+.bw-reviews__count {
+	color: #64748b;
+	font-size: 12px;
+}
+
+.bw-reviews__list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	overflow: auto;
+}
+
+.bw-reviews__empty {
+	color: #94a3b8;
+	text-align: center;
+	padding: 10px 0;
+}
+
+/* Recomendados (sidebar) */
+.bw-recos .bw-card {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.bw-recos__list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: grid;
+	gap: 10px;
+}
+
+.bw-recos__empty {
+	color: var(--muted);
+}
+
+.bw-reco {
+	display: grid;
+	grid-template-columns: 96px 1fr;
+	gap: 10px;
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	padding: 8px;
+}
+
+.bw-reco__media {
+	width: 96px;
+	height: 76px;
+	border-radius: 10px;
+	overflow: hidden;
+	background: #eef2f7;
+}
+
+.bw-reco__media img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.bw-reco__ph {
+	width: 100%;
+	height: 100%;
+	display: grid;
+	place-items: center;
+	color: #9ca3af;
+}
+
+.bw-reco__title {
+	margin: 0 0 4px;
+	font-size: 14px;
+	font-weight: 800;
+}
+
+.bw-reco__meta {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	margin-bottom: 6px;
+}
+
+.price {
+	font-weight: 900;
+}
+
+.chip {
+	background: #111827;
+	color: #fff;
+	border-radius: 999px;
+	padding: 4px 8px;
+	font-size: 11px;
+	font-weight: 800;
+}
+
+/* ---------- Responsive (MÓVIL): todo en columna ---------- */
+@media (max-width: 980px) {
+	.bw-grid {
+		grid-template-columns: 1fr;
+		grid-template-areas:
+			"photo"
+			"thumbs"
+			"info"
+			"reserve"
+			"map"
+			"reviews"
+			"recos";
+	}
+
+	.bw-photo {
+		height: var(--bw-photo-h-mobile);
+	}
+
+	.bw-infoCard {
+		height: auto;
+		max-height: none;
+	}
+
+	.bw-thumbs {
+		grid-auto-flow: column;
+		grid-auto-columns: minmax(72px, 1fr);
+		overflow-x: auto;
+		padding-bottom: 4px;
+	}
+
+	.bw-vthumb {
+		height: 64px;
+	}
+
+	.bw-mapwrap {
+		height: var(--bw-map-h-mobile);
+	}
+}
+
+.bw-card--reserve {
+	display: flex;
+	flex-direction: column;
+	min-height: 360px;
+}
+
+.bw-reserve__spacer {
+	flex: 1 1 auto;
+}
+
+.bw-reserve__footer {
+	display: flex;
+	align-items: flex-end;
+	justify-content: flex-end;
+	gap: 16px;
+	margin-top: 12px;
+	padding-top: 12px;
+	border-top: 1px solid #e5e7eb;
+}
+
+.bw-reserve__summary {
+	margin-left: auto;
+	display: flex;
+	align-items: baseline;
+	gap: 50px;
+}
+
+.bw-reserve__chip .label {
+	font-size: 14px;
+	color: #6b7280;
+	margin-right: 6px;
+}
+
+.bw-reserve__chip .value {
+	font-size: 20px;
+	font-weight: 700;
+	color: #0f172a;
+	line-height: 1;
+}
+
+.bw-reserve__chip .value--total {
+	font-size: 22px;
+}
+
+.bw-reserve__ctas {
+	display: flex;
+	gap: 10px;
+}
+
+@media (max-width: 640px) {
+	.bw-reserve__footer {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.bw-reserve__summary {
+		justify-content: flex-start;
+	}
+
+	.bw-reserve__ctas {
+		justify-content: stretch;
+	}
+}
+
+/* inputs de reserva (arriba/izquierda) */
+.bw-reserve__inputs {
+	display: block;
+	/* el DateRangePicker ocupa su bloque */
+}
+
+/* mensaje de error bajo el picker */
+.bw-reserve__error {
+	margin-top: 8px;
+}
+
+/* footer inferior de la tarjeta de reserva */
+.bw-reserve__footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	margin-top: 12px;
+	flex-wrap: wrap;
+}
+
+/* lado derecho del footer (personas + chips + botón) */
+.bw-reserve__right {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.bw-personas-inline {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 8px;
+	border-radius: 8px;
+	min-height: 44px;
+	background: #fff;
+}
+
+.bw-personas-inline__label {
+	white-space: nowrap;
+	font-size: 14px;
+}
+
+.bw-personas-inline__input {
+	width: 80px;
+}
+
+.bw-reserve__chip {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	gap: 8px;
+	padding: 6px 10px;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	font-size: 14px;
+}
+
+.bw-reserve__chip .label {
+	opacity: 0.8;
+}
+
+.bw-reserve__chip .value--total {
+	font-weight: 700;
+}
