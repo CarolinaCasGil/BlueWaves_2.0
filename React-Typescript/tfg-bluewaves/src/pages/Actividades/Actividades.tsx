@@ -75,7 +75,6 @@ export default function Actividades() {
 
 	return (
 		<main className="acts2-page">
-			{/* Cabecera con controles compactos */}
 			<header className="acts2-hero">
 				<div className="container acts2-hero__inner">
 					<div>
@@ -114,7 +113,7 @@ export default function Actividades() {
 			{error && <div className="container state state--error">Error: {error}</div>}
 
 			{!loading && !error && (
-				<section className="container acts2-grid">
+				<section className="container container--wide acts2-grid">
 					{filtered.map((a) => {
 						const anyA = a as any
 						const foto = anyA.foto as string | undefined

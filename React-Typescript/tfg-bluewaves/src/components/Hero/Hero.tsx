@@ -1,52 +1,38 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './Hero.css'
 
-type Props = {
-	uniquePlaces: string[]
-	onSearch: (payload: { place: string; from: string; to: string }) => void
-}
-
-export default function Hero({ uniquePlaces, onSearch }: Props) {
-	const [place, setPlace] = useState<string>('')
-	const [from, setFrom] = useState<string>('')
-	const [to, setTo] = useState<string>('')
-
-	const submit = (e: React.FormEvent) => {
-		e.preventDefault()
-		onSearch({ place, from, to })
-	}
-
+export default function Hero() {
 	return (
-		<section className="hero hero--fullscreen">
-			<div className="hero__bg" />
-			<div className="hero__overlay" />
-			<div className="container hero__container">
-				<div className="hero__grid">
-					<div className="hero__left">
-
-						{/* Chips en horizontal */}
-						<div className="badges badges--nowrap">
-							<span className="badge badge--light">★ Destino Top</span>
-							<span className="badge badge--blue">-20% Otoño</span>
-							{/* <span className="badge badge--green">Cancelación flexible</span> */}
+		<section className="home-hero home-hero--fullscreen">
+			<div className="home-hero__bg" />
+			<div className="home-hero__overlay" />
+			<div className="container home-hero__container">
+				<div className="home-hero__grid">
+					<div className="home-hero__left">
+						{/* Chips siempre en horizontal (scroll en móvil si hace falta) */}
+						<div className="home-badges home-badges--nowrap" aria-label="destacados">
+							<span className="home-badge home-badge--light">★ Destino Top</span>
+							<span className="home-badge home-badge--blue">-20% Otoño</span>
+							<span className="home-badge home-badge--green">Cancelación flexible</span>
 						</div>
 
 						{/* Marca + subtítulo */}
-						<div className="heroBrand">
-							<h1 className="heroTitle">BlueWaves</h1>
-							<p className="heroSubtitle">Tu próxima experiencia de surf</p>
+						<div className="home-heroBrand">
+							<h1 className="home-heroTitle">BlueWaves</h1>
+							<p className="home-heroSubtitle">Tu próxima experiencia de surf</p>
 						</div>
 
-						<p className="heroLead">
+						<p className="home-heroLead">
 							Explora packs y alojamientos verificados, al mejor precio, con atención personalizada para todos los niveles.
 						</p>
 
-						<div className="hero__ctas">
+						{/* CTAs (se apoyan en tu .btn global, con tweaks solo aquí) */}
+						<div className="home-hero__ctas">
 							<Link to="/alojamientos" className="btn btn--primary">Ver Alojamientos</Link>
 							<Link to="/actividades" className="btn btn--ghost btn--ghost-invert">Ver Actividades</Link>
 						</div>
 					</div>
+					{/* Si algún día quieres poner contenido en la derecha, deja este grid a 2 col. */}
 				</div>
 			</div>
 		</section>

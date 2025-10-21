@@ -1,28 +1,25 @@
-/* ===== HERO (pantalla completa) ===== */
-.hero {
+.home-hero {
 	padding: 0;
 	background: transparent;
+	overflow: clip;
 }
 
-.hero--fullscreen {
+.home-hero--fullscreen {
 	position: relative;
 	min-height: 95vh;
 	display: grid;
 }
 
-/* Fondo: usa tu imagen */
-.hero__bg {
+.home-hero__bg {
 	position: absolute;
 	inset: 0;
 	background-image: url('https://okrgjysrqapvwahrsecp.supabase.co/storage/v1/object/sign/Fotos%20proyecto/Variado/fondo5.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85MWM4NzMwYy05MmI5LTRmMzUtOTNmOC04MTk1MGM4NzQyM2IiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJGb3RvcyBwcm95ZWN0by9WYXJpYWRvL2ZvbmRvNS5qcGVnIiwiaWF0IjoxNzYxMDYxMDM3LCJleHAiOjE0MTkwNzA0NTAzN30.RRTuFFR4Gg6uyHKLyUzpvPyWke9iUFR39CV2BPH4so0');
 	background-size: cover;
 	background-position: center;
-	transform: scale(1.02);
 	filter: brightness(0.85);
 }
 
-/* Capa de contraste (sin fondo en el texto) */
-.hero__overlay {
+.home-hero__overlay {
 	position: absolute;
 	inset: 0;
 	background: linear-gradient(180deg,
@@ -32,7 +29,7 @@
 			rgba(2, 6, 23, 0.35) 100%);
 }
 
-.hero__container {
+.home-hero__container {
 	position: relative;
 	z-index: 1;
 	height: 100%;
@@ -40,7 +37,7 @@
 	align-items: center;
 }
 
-.hero__grid {
+.home-hero__grid {
 	display: grid;
 	grid-template-columns: 1.1fr 1fr;
 	gap: 24px;
@@ -48,35 +45,30 @@
 }
 
 @media (max-width: 960px) {
-	.hero__grid {
+	.home-hero__grid {
 		grid-template-columns: 1fr;
 	}
 }
 
-/* ===== Chips siempre en horizontal (scroll en móvil) ===== */
-.badges {
+.home-badges {
 	display: flex;
 	gap: 8px;
 	margin-bottom: 12px;
 	flex-wrap: wrap;
-	/* desktop puede envolver */
 }
 
-.badges--nowrap {
+.home-badges--nowrap {
 	flex-wrap: nowrap;
-	/* forzamos línea única */
 	overflow-x: auto;
-	/* scroll horizontal en móvil */
 	-webkit-overflow-scrolling: touch;
 	scrollbar-width: none;
-	/* Firefox oculta barra */
 }
 
-.badges--nowrap::-webkit-scrollbar {
+.home-badges--nowrap::-webkit-scrollbar {
 	display: none;
 }
 
-.hero .badge {
+.home-badge {
 	padding: 6px 10px;
 	border-radius: 999px;
 	font-size: 12px;
@@ -85,32 +77,32 @@
 	background: rgba(255, 255, 255, 0.18);
 	color: #fff;
 	backdrop-filter: blur(4px);
+	white-space: nowrap;
 }
 
-.hero .badge--light {
+.home-badge--light {
 	background: rgba(255, 255, 255, 0.88);
 	color: #0a0a0a;
 	border-color: rgba(255, 255, 255, 0.9);
 }
 
-.hero .badge--blue {
+.home-badge--blue {
 	background: rgba(14, 165, 233, 0.95);
 	color: #fff;
 	border-color: rgba(14, 165, 233, 0.95);
 }
 
-.hero .badge--green {
+.home-badge--green {
 	background: rgba(16, 185, 129, 0.95);
 	color: #fff;
 	border-color: rgba(16, 185, 129, 0.95);
 }
 
-/* ===== Marca + subtítulo (sin fondos) ===== */
-.heroBrand {
+.home-heroBrand {
 	margin: 2px 0 4px;
 }
 
-.heroTitle {
+.home-heroTitle {
 	margin: 0;
 	font-size: clamp(42px, 6.5vw, 72px);
 	font-weight: 1000;
@@ -120,7 +112,7 @@
 	text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
 }
 
-.heroSubtitle {
+.home-heroSubtitle {
 	margin: 6px 0 0;
 	font-size: clamp(16px, 2.2vw, 22px);
 	font-weight: 800;
@@ -128,23 +120,21 @@
 	letter-spacing: 0.01em;
 }
 
-/* Párrafo de apoyo */
-.heroLead {
+.home-heroLead {
 	margin: 10px 0 0;
 	color: rgba(255, 255, 255, 0.92);
 	line-height: 1.6;
 	max-width: 62ch;
 }
 
-/* ===== CTAs vistosas ===== */
-.hero__ctas {
+.home-hero__ctas {
 	position: relative;
 	display: flex;
 	gap: 12px;
 	margin-top: 18px;
 }
 
-.hero__ctas::after {
+.home-hero__ctas::after {
 	content: "";
 	position: absolute;
 	inset: -8px -10px;
@@ -154,7 +144,7 @@
 	z-index: -1;
 }
 
-.hero__ctas .btn {
+.home-hero__ctas .btn {
 	--hero-radius: 14px;
 	--hero-pad-y: 12px;
 	--hero-pad-x: 18px;
@@ -167,92 +157,61 @@
 	transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-/* Primary degradado oceánico */
-.hero__ctas .btn.btn--primary {
+.home-hero__ctas .btn.btn--primary {
 	--g1: #22d3ee;
-	/* cyan-400 */
 	--g2: #2563eb;
-	/* indigo-600 */
 	background: linear-gradient(135deg, var(--g1), var(--g2));
 	color: #fff;
 	border: 0;
 	box-shadow: var(--hero-shadow), 0 0 0 1px rgba(255, 255, 255, 0.06) inset, 0 0 22px rgba(34, 211, 238, 0.35);
 }
 
-.hero__ctas .btn.btn--primary:hover {
+.home-hero__ctas .btn.btn--primary:hover {
 	transform: translateY(-2px);
 	box-shadow: var(--hero-shadow), 0 0 28px rgba(34, 211, 238, 0.45);
 	filter: saturate(1.08);
 }
 
-.hero__ctas .btn.btn--primary:active {
+.home-hero__ctas .btn.btn--primary:active {
 	transform: translateY(0);
 }
 
-.hero__ctas .btn.btn--primary:focus-visible {
+.home-hero__ctas .btn.btn--primary:focus-visible {
 	outline: none;
 	box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.55), var(--hero-shadow);
 }
 
-/* Ghost invert (sin fondo, solo borde) */
-.hero__ctas .btn.btn--ghost.btn--ghost-invert {
+.home-hero__ctas .btn.btn--ghost.btn--ghost-invert {
 	background: rgba(255, 255, 255, 0.08);
 	color: #fff;
 	border: 2px solid rgba(255, 255, 255, 0.9);
 	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
 }
 
-.hero__ctas .btn.btn--ghost.btn--ghost-invert:hover {
+.home-hero__ctas .btn.btn--ghost.btn--ghost-invert:hover {
 	background: rgba(255, 255, 255, 0.18);
 	transform: translateY(-2px);
 }
 
-.hero__ctas .btn.btn--ghost.btn--ghost-invert:focus-visible {
+.home-hero__ctas .btn.btn--ghost.btn--ghost-invert:focus-visible {
 	outline: none;
 	box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.6), 0 6px 18px rgba(0, 0, 0, 0.3);
 }
 
-/* Botones algo más grandes en desktop + full width en móvil */
 @media (min-width: 961px) {
-	.hero__ctas .btn {
+	.home-hero__ctas .btn {
 		--hero-pad-y: 14px;
 		--hero-pad-x: 22px;
 	}
 }
 
 @media (max-width: 560px) {
-	.hero__ctas {
+	.home-hero__ctas {
 		flex-direction: column;
 	}
 
-	.hero__ctas .btn {
+	.home-hero__ctas .btn {
 		width: 100%;
 		text-align: center;
 	}
-}
-
-/* ===== (Opcional) elementos heredados de versiones anteriores ===== */
-.hero__title {
-	/* no usado ahora, se mantiene por compatibilidad */
-	font-size: clamp(28px, 4.2vw, 44px);
-	font-weight: 900;
-	letter-spacing: -0.03em;
-	margin: 0;
-}
-
-.hero__subtitle {
-	/* no usado ahora */
-	margin: 12px 0 0;
-	color: rgba(255, 255, 255, .92);
-	line-height: 1.55;
-	max-width: 56ch;
-}
-
-.hero__title--invert {
-	color: #fff;
-	text-shadow: 0 2px 12px rgba(0, 0, 0, .35);
-}
-
-.hero__subtitle--invert {
-	color: rgba(255, 255, 255, .92);
 }

@@ -127,8 +127,8 @@
 /* ===== Grid ===== */
 .acts2-grid {
 	display: grid;
-	gap: 18px;
-	padding: 18px 0 34px;
+	gap: 5px;
+	padding: 5px 0 5px;
 	grid-template-columns: repeat(4, 1fr);
 }
 
@@ -479,4 +479,72 @@
 
 .badge--group {
 	box-shadow: 0 0 0 1px rgba(134, 239, 172, .3) inset;
+}
+
+/* === Ancho del contenedor solo para la sección de cards === */
+/* Desktop grande: usa un ancho amplio para que las 4 columnas ocupen todo */
+.container--wide {
+	width: min(1440px, 100% - 24px);
+	margin: 0 auto;
+}
+
+/* Tablets y móvil: el ancho se adapta al viewport */
+@media (max-width: 1280px) {
+	.container--wide {
+		width: min(1200px, 100% - 24px);
+	}
+}
+
+@media (max-width: 1024px) {
+	.container--wide {
+		width: min(960px, 100% - 24px);
+	}
+}
+
+@media (max-width: 640px) {
+	.container--wide {
+		width: min(600px, 100% - 16px);
+	}
+}
+
+/* === Grid 100% del ancho disponible y columnas responsivas === */
+.acts2-grid {
+	/* fuerza a que las 4 columnas repartan TODO el ancho del contenedor */
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 18px;
+}
+
+/* 3 columnas en pantallas medias grandes (si quieres mantener 4, elimina este bloque) */
+@media (max-width: 1280px) {
+	.acts2-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+/* 2 columnas en tablet */
+@media (max-width: 1024px) {
+	.acts2-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+/* 1 columna en móvil */
+@media (max-width: 640px) {
+	.acts2-grid {
+		grid-template-columns: 1fr;
+		gap: 14px;
+	}
+}
+
+/* Altura de imagen adaptativa para evitar cards enormes en móvil */
+@media (max-width: 1024px) {
+	.actcard__media {
+		height: 200px;
+	}
+}
+
+@media (max-width: 640px) {
+	.actcard__media {
+		height: 180px;
+	}
 }
