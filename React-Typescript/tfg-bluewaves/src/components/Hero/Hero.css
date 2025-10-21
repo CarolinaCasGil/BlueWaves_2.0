@@ -1,13 +1,16 @@
+/* ====== HERO (aislado con prefijo home-) ====== */
 .home-hero {
-	padding: 0;
+	position: relative;
+	min-height: 92vh;
+	display: grid;
+	align-items: center;
+	overflow-x: hidden;
+	/* evita scroll-right */
 	background: transparent;
-	overflow: clip;
 }
 
 .home-hero--fullscreen {
-	position: relative;
 	min-height: 95vh;
-	display: grid;
 }
 
 .home-hero__bg {
@@ -16,17 +19,17 @@
 	background-image: url('https://okrgjysrqapvwahrsecp.supabase.co/storage/v1/object/sign/Fotos%20proyecto/Variado/fondo5.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85MWM4NzMwYy05MmI5LTRmMzUtOTNmOC04MTk1MGM4NzQyM2IiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJGb3RvcyBwcm95ZWN0by9WYXJpYWRvL2ZvbmRvNS5qcGVnIiwiaWF0IjoxNzYxMDYxMDM3LCJleHAiOjE0MTkwNzA0NTAzN30.RRTuFFR4Gg6uyHKLyUzpvPyWke9iUFR39CV2BPH4so0');
 	background-size: cover;
 	background-position: center;
-	filter: brightness(0.85);
+	/* nada de transform scale para no provocar overflow */
+	filter: brightness(0.9);
+	z-index: 0;
 }
 
 .home-hero__overlay {
 	position: absolute;
 	inset: 0;
-	background: linear-gradient(180deg,
-			rgba(2, 6, 23, 0.55) 0%,
-			rgba(2, 6, 23, 0.35) 35%,
-			rgba(2, 6, 23, 0.25) 60%,
-			rgba(2, 6, 23, 0.35) 100%);
+	/* overlay suave; NO fondo en el texto */
+	background: linear-gradient(180deg, rgba(2, 6, 23, 0.45) 0%, rgba(2, 6, 23, 0.35) 40%, rgba(2, 6, 23, 0.45) 100%);
+	z-index: 0;
 }
 
 .home-hero__container {
@@ -40,6 +43,7 @@
 .home-hero__grid {
 	display: grid;
 	grid-template-columns: 1.1fr 1fr;
+	/* preparado por si añades columna derecha */
 	gap: 24px;
 	align-items: center;
 }
@@ -50,22 +54,19 @@
 	}
 }
 
+/* ====== Chips siempre en horizontal ====== */
 .home-badges {
 	display: flex;
 	gap: 8px;
 	margin-bottom: 12px;
-	flex-wrap: wrap;
 }
 
 .home-badges--nowrap {
 	flex-wrap: nowrap;
 	overflow-x: auto;
+	/* scroll horizontal en móvil si no caben */
 	-webkit-overflow-scrolling: touch;
-	scrollbar-width: none;
-}
-
-.home-badges--nowrap::-webkit-scrollbar {
-	display: none;
+	scrollbar-width: thin;
 }
 
 .home-badge {
@@ -73,138 +74,98 @@
 	border-radius: 999px;
 	font-size: 12px;
 	font-weight: 700;
-	border: 1px solid rgba(255, 255, 255, 0.75);
-	background: rgba(255, 255, 255, 0.18);
-	color: #fff;
-	backdrop-filter: blur(4px);
 	white-space: nowrap;
+	border: none;
 }
 
 .home-badge--light {
-	background: rgba(255, 255, 255, 0.88);
+	background: rgba(255, 255, 255, .9);
 	color: #0a0a0a;
-	border-color: rgba(255, 255, 255, 0.9);
+	letter-spacing: .02em;
 }
 
 .home-badge--blue {
-	background: rgba(14, 165, 233, 0.95);
+	background: #0ea5e9;
 	color: #fff;
-	border-color: rgba(14, 165, 233, 0.95);
 }
 
 .home-badge--green {
-	background: rgba(16, 185, 129, 0.95);
+	background: #10b981;
 	color: #fff;
-	border-color: rgba(16, 185, 129, 0.95);
 }
 
+/* ====== Marca + subtítulo (sin fondo en el texto) ====== */
 .home-heroBrand {
-	margin: 2px 0 4px;
+	margin: 6px 0 2px;
 }
 
 .home-heroTitle {
 	margin: 0;
-	font-size: clamp(42px, 6.5vw, 72px);
-	font-weight: 1000;
+	font-size: clamp(34px, 6vw, 60px);
+	/* más vistoso */
+	font-weight: 900;
 	letter-spacing: -0.035em;
-	color: #fff;
-	line-height: 0.98;
-	text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
+	color: #ffffff;
+	/* texto sin background; contraste con overlay */
+	text-shadow: 0 2px 12px rgba(0, 0, 0, .35);
 }
 
 .home-heroSubtitle {
 	margin: 6px 0 0;
-	font-size: clamp(16px, 2.2vw, 22px);
-	font-weight: 800;
-	color: #ffffff;
-	letter-spacing: 0.01em;
+	font-size: clamp(16px, 2.6vw, 22px);
+	font-weight: 700;
+	color: rgba(255, 255, 255, .92);
 }
 
 .home-heroLead {
-	margin: 10px 0 0;
-	color: rgba(255, 255, 255, 0.92);
-	line-height: 1.6;
-	max-width: 62ch;
+	margin: 12px 0 0;
+	color: rgba(255, 255, 255, .92);
+	line-height: 1.55;
+	max-width: 60ch;
 }
 
+/* ====== CTAs (usa tu .btn global, con pequeños tweaks aquí) ====== */
 .home-hero__ctas {
-	position: relative;
 	display: flex;
 	gap: 12px;
 	margin-top: 18px;
 }
 
-.home-hero__ctas::after {
-	content: "";
-	position: absolute;
-	inset: -8px -10px;
-	pointer-events: none;
-	background: radial-gradient(60% 60% at 50% 50%, rgba(34, 211, 238, 0.18), transparent 70%);
-	filter: blur(8px);
-	z-index: -1;
-}
-
 .home-hero__ctas .btn {
-	--hero-radius: 14px;
-	--hero-pad-y: 12px;
-	--hero-pad-x: 18px;
-	--hero-shadow: 0 10px 20px rgba(0, 0, 0, 0.25), 0 4px 10px rgba(0, 0, 0, 0.25);
-	border-radius: var(--hero-radius);
-	padding: var(--hero-pad-y) var(--hero-pad-x);
+	border-radius: 14px;
+	padding: 12px 18px;
 	font-weight: 900;
-	letter-spacing: 0.02em;
+	letter-spacing: .02em;
 	transform: translateZ(0);
-	transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+	transition: transform .15s ease, box-shadow .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
 }
 
 .home-hero__ctas .btn.btn--primary {
-	--g1: #22d3ee;
-	--g2: #2563eb;
-	background: linear-gradient(135deg, var(--g1), var(--g2));
+	background: linear-gradient(135deg, #22d3ee, #2563eb);
 	color: #fff;
 	border: 0;
-	box-shadow: var(--hero-shadow), 0 0 0 1px rgba(255, 255, 255, 0.06) inset, 0 0 22px rgba(34, 211, 238, 0.35);
+	box-shadow: 0 10px 20px rgba(0, 0, 0, .25), 0 4px 10px rgba(0, 0, 0, .2), 0 0 22px rgba(34, 211, 238, .35);
 }
 
 .home-hero__ctas .btn.btn--primary:hover {
 	transform: translateY(-2px);
-	box-shadow: var(--hero-shadow), 0 0 28px rgba(34, 211, 238, 0.45);
-	filter: saturate(1.08);
-}
-
-.home-hero__ctas .btn.btn--primary:active {
-	transform: translateY(0);
-}
-
-.home-hero__ctas .btn.btn--primary:focus-visible {
-	outline: none;
-	box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.55), var(--hero-shadow);
+	box-shadow: 0 10px 22px rgba(0, 0, 0, .28), 0 6px 12px rgba(0, 0, 0, .22), 0 0 28px rgba(34, 211, 238, .45);
+	filter: saturate(1.06);
 }
 
 .home-hero__ctas .btn.btn--ghost.btn--ghost-invert {
-	background: rgba(255, 255, 255, 0.08);
+	background: rgba(255, 255, 255, .08);
 	color: #fff;
-	border: 2px solid rgba(255, 255, 255, 0.9);
-	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+	border: 2px solid rgba(255, 255, 255, .9);
+	box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
 }
 
 .home-hero__ctas .btn.btn--ghost.btn--ghost-invert:hover {
-	background: rgba(255, 255, 255, 0.18);
+	background: rgba(255, 255, 255, .18);
 	transform: translateY(-2px);
 }
 
-.home-hero__ctas .btn.btn--ghost.btn--ghost-invert:focus-visible {
-	outline: none;
-	box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.6), 0 6px 18px rgba(0, 0, 0, 0.3);
-}
-
-@media (min-width: 961px) {
-	.home-hero__ctas .btn {
-		--hero-pad-y: 14px;
-		--hero-pad-x: 22px;
-	}
-}
-
+/* Botones full width en móvil si quieres */
 @media (max-width: 560px) {
 	.home-hero__ctas {
 		flex-direction: column;
@@ -215,3 +176,8 @@
 		text-align: center;
 	}
 }
+
+/* ====== Contenedor (si usas .container global, no tocamos) ====== */
+/* Si notas márgenes raros, puedes forzar:
+.container { width: min(1100px, 100% - 24px); margin: 0 auto; }
+*/
