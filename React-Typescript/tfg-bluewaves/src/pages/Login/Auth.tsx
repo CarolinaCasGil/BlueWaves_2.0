@@ -27,12 +27,17 @@ export default function Auth() {
 	const [err, setErr] = useState<string | null>(null)
 	const navigate = useNavigate()
 
+	// Aseguramos que la página pueda hacer scroll (fix móviles)
 	useEffect(() => {
-		document.body.classList.remove('no-scroll');
-		return () => {
-		};
-	}, []);
+		document.body.classList.remove('no-scroll')
+		return () => { }
+	}, [])
 
+	// limpiar mensajes al cambiar de pestaña
+	useEffect(() => {
+		setMsg(null)
+		setErr(null)
+	}, [mode])
 
 	const looksLikeEmail = (s: string) => s.includes('@')
 
@@ -62,7 +67,7 @@ export default function Auth() {
 		if (uerr || !ures?.user) throw new Error('No hay sesión activa.')
 
 		const payload = {
-			auth_user_id: ures.user.id, // <- clave correcta según tu profiles.ts
+			auth_user_id: ures.user.id,
 			email: (overrides?.email ?? ures.user.email ?? '').trim() || null,
 			nom_usuario: overrides?.nom_usuario ?? null,
 			nombre: overrides?.nombre ?? null,
@@ -101,7 +106,7 @@ export default function Auth() {
 		})()
 	}, [])
 
-	// (Opcional) Comprobar unicidad de email y alias antes de registrar
+	// (Opcional) Comprobar unicidad antes de registrar
 	async function assertUniqueEmailAndUser(emailV: string, userV: string) {
 		const [byEmail, byUser] = await Promise.all([
 			supabase.from('profiles').select('email').eq('email', emailV.trim()).maybeSingle(),
@@ -150,22 +155,39 @@ export default function Auth() {
 			if (password !== password2) throw new Error('Las contraseñas no coinciden.')
 			await assertUniqueEmailAndUser(email, nomUsuario)
 
-			const { data, error } = await supabase.auth.signUp({
-				email: email.trim(),
-				password,
-				options: {
-					emailRedirectTo: `${window.location.origin}/auth/callback`,
-					data: {
-						nom_usuario: nomUsuario.trim() || null,
-						nombre: nombre.trim() || null,
-						apellido: apellido.trim() || null,
-						telefono: telefono.trim() || null,
+			// IMPORTANTE: quitamos emailRedirectTo para aislar errores 500 por redirects/SMTP.
+			let signUpError: any = null
+			let signUpData: any = null
+			try {
+				const { data, error } = await supabase.auth.signUp({
+					email: email.trim(),
+					password,
+					options: {
+						// Si ya tengas SMTP/redirects bien, vuelve a activar esta línea:
+						// emailRedirectTo: `${window.location.origin}/auth/callback`,
+						data: {
+							nom_usuario: nomUsuario.trim() || null,
+							nombre: nombre.trim() || null,
+							apellido: apellido.trim() || null,
+							telefono: telefono.trim() || null,
+						},
 					},
-				},
-			})
-			if (error) throw error
+				})
+				signUpData = data
+				signUpError = error
+			} catch (e) {
+				console.error('SIGNUP network/catch error:', e)
+				throw e
+			}
 
-			const hasSession = !!data.session
+			if (signUpError) {
+				console.error('SIGNUP error object:', signUpError)
+				throw new Error(signUpError.message || 'Fallo en registro')
+			}
+
+			console.log('SIGNUP data:', signUpData)
+
+			const hasSession = !!signUpData?.session
 			if (hasSession) {
 				await upsertOwnProfile({
 					email: email.trim(),
@@ -177,6 +199,7 @@ export default function Auth() {
 				const { data: { user } } = await supabase.auth.getUser()
 				if (user) navigate(`/login?uid=${user.id}`, { replace: true })
 			} else {
+				// flujo de confirmación por email
 				localStorage.setItem(PENDING_PROFILE_KEY, JSON.stringify({
 					email: email.trim(),
 					nom_usuario: nomUsuario.trim() || null,
@@ -187,6 +210,7 @@ export default function Auth() {
 				setMsg('¡Cuenta creada! Revisa tu correo para confirmar. Guardaremos tu perfil al iniciar sesión.')
 			}
 		} catch (e: any) {
+			console.error('SIGNUP catch:', e)
 			setErr(e?.message ?? 'Ocurrió un error')
 		} finally {
 			setLoading(false)
@@ -200,10 +224,20 @@ export default function Auth() {
 					<h1 className="auth__title">{mode === 'login' ? 'Iniciar sesión' : 'Crear cuenta'}</h1>
 
 					<div className="auth__tabs" role="tablist" aria-label="Modo de acceso">
-						<button type="button" role="tab" className={mode === 'login' ? 'is-active' : ''} onClick={() => setMode('login')}>
+						<button
+							type="button"
+							role="tab"
+							className={mode === 'login' ? 'is-active' : ''}
+							onClick={() => setMode('login')}
+						>
 							Iniciar sesión
 						</button>
-						<button type="button" role="tab" className={mode === 'register' ? 'is-active' : ''} onClick={() => setMode('register')}>
+						<button
+							type="button"
+							role="tab"
+							className={mode === 'register' ? 'is-active' : ''}
+							onClick={() => setMode('register')}
+						>
 							Registrarse
 						</button>
 					</div>
