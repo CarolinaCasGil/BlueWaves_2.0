@@ -24,14 +24,21 @@ export default function Hero({ uniquePlaces, onSearch }: Props) {
 			<div className="container hero__container">
 				<div className="hero__grid">
 					<div className="hero__left">
-						<div className="badges">
+
+						{/* Chips en horizontal */}
+						<div className="badges badges--nowrap">
 							<span className="badge badge--light">★ Destino Top</span>
 							<span className="badge badge--blue">-20% Otoño</span>
-							<span className="badge badge--green">Cancelación flexible</span>
+							{/* <span className="badge badge--green">Cancelación flexible</span> */}
 						</div>
 
-						<h1 className="hero__title hero__title--invert">BlueWaves — Tu próxima experiencia de surf</h1>
-						<p className="hero__subtitle hero__subtitle--invert">
+						{/* Marca + subtítulo */}
+						<div className="heroBrand">
+							<h1 className="heroTitle">BlueWaves</h1>
+							<p className="heroSubtitle">Tu próxima experiencia de surf</p>
+						</div>
+
+						<p className="heroLead">
 							Explora packs y alojamientos verificados, al mejor precio, con atención personalizada para todos los niveles.
 						</p>
 
