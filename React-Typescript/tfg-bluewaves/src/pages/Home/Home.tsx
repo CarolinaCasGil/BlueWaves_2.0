@@ -1,3 +1,4 @@
+// src/pages/Home/Home.tsx
 import { useEffect, useMemo, useState } from 'react'
 import { PackService, type Pack } from '../../services/packs'
 import { AlojamientoService, type Alojamiento } from '../../services/alojamientos'
@@ -42,23 +43,14 @@ export default function Home() {
 		return () => { mounted = false }
 	}, [])
 
-	// Lugares únicos ordenados A→Z (para el select del Hero)
-	const uniquePlaces = useMemo(() => {
-		const values = alojamientos.map(a => (a.lugar ?? '').trim()).filter(Boolean)
-		return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }))
-	}, [alojamientos])
-
+	// Ofertas aleatorias
 	const offerPacks = useMemo(() => shufflePick(packs, 4), [packs])
 	const offerAlojs = useMemo(() => shufflePick(alojamientos, 3), [alojamientos])
-
-	const handleHeroSearch = (payload: { place: string; from: string; to: string }) => {
-		console.log('Buscar:', payload)
-	}
 
 	return (
 		<main className="home">
 			{/* HERO full-screen */}
-			<Hero uniquePlaces={uniquePlaces} onSearch={handleHeroSearch} />
+			<Hero />
 
 			{/* ESTADOS */}
 			{loading && <div className="container state">Cargando ofertas…</div>}
