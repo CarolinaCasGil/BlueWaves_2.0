@@ -177,3 +177,77 @@
 	width: min(1100px, 100% - 24px);
 	margin: 0 auto;
 }
+
+/* ===== SOLO MÓVIL: la PÁGINA hace scroll, no la tarjeta ===== */
+@media (max-width: 640px) {
+
+	/* Asegura que el viewport permita scroll */
+	html,
+	body {
+		height: auto !important;
+		min-height: 100svh;
+		/* corrige iOS barras */
+		overflow-y: auto !important;
+		/* fuerza scroll vertical */
+		-webkit-overflow-scrolling: touch;
+	}
+
+	/* El <main> de Auth deja de ser grid (que a veces bloquea el scroll) */
+	.auth.auth--compact.auth--register {
+		display: block !important;
+		/* ← cambia de grid a block */
+		min-height: 100svh;
+		height: auto !important;
+		overflow-y: auto !important;
+		/* scroll en la página */
+		padding: max(8px, env(safe-area-inset-top)) 0 max(8px, env(safe-area-inset-bottom));
+	}
+
+	/* El wrapper no introduce otra “caja” con overflow */
+	.auth.auth--compact.auth--register .auth__wrap {
+		height: auto !important;
+		overflow: visible !important;
+		padding: 0 10px;
+	}
+
+	/* La tarjeta NO scrollea por sí misma: crece y la página scrollea */
+	.auth.auth--compact.auth--register .auth__card {
+		max-height: none !important;
+		overflow: visible !important;
+		padding: 14px;
+	}
+
+	/* Evita que algo arriba esté oculto por sticky/centrados */
+	.auth.auth--compact.auth--register .auth__title,
+	.auth.auth--compact.auth--register .auth__tabs {
+		position: static;
+	}
+
+	/* Inputs compactos */
+	.auth.auth--compact.auth--register .auth__grid,
+	.auth.auth--compact.auth--register .auth__grid--cols2 {
+		gap: 8px;
+	}
+
+	.auth.auth--compact.auth--register .auth__label {
+		gap: 4px;
+		margin-bottom: 8px;
+	}
+
+	.auth.auth--compact.auth--register .auth__label input {
+		padding: 9px 10px;
+	}
+
+	/* CTA al final y a ancho completo */
+	.auth.auth--compact.auth--register .auth__ctas {
+		position: static;
+		/* quita sticky */
+		background: transparent;
+		padding-top: 12px;
+		margin-top: 12px;
+	}
+
+	.auth.auth--compact.auth--register .auth__ctas .btn {
+		width: 100%;
+	}
+}

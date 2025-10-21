@@ -111,3 +111,85 @@
 	padding: 24px 0;
 	color: var(--muted);
 }
+
+/* ====== HERO ALOJAMIENTOS (responsive) ====== */
+.aloj-hero {
+	position: relative;
+	background: linear-gradient(180deg, rgba(255, 255, 255, .95), rgba(255, 255, 255, .78));
+	border-bottom: 0;
+	/* sin borde, lo solapa la ola */
+	padding: 18px 0 0;
+}
+
+.aloj-hero__inner {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	/* texto izquierda, filtros derecha */
+	align-items: end;
+	gap: 16px;
+}
+
+@media (max-width: 860px) {
+	.aloj-hero__inner {
+		grid-template-columns: 1fr;
+		/* apilar */
+		align-items: start;
+		gap: 12px;
+	}
+}
+
+.aloj-title {
+	margin: 0;
+	font-size: clamp(24px, 3.6vw, 40px);
+	font-weight: 900;
+	letter-spacing: -0.02em;
+	line-height: 1.05;
+}
+
+.aloj-sub {
+	margin: 6px 0 0;
+	color: var(--ocean-ink);
+	font-size: clamp(14px, 1.8vw, 16px);
+}
+
+/* Controles (selects, filtros, etc.) */
+.aloj-controls {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+}
+
+@media (max-width: 860px) {
+	.aloj-controls {
+		justify-content: flex-start;
+		/* al apilar, a la izquierda */
+	}
+}
+
+.selectlabel {
+	display: inline-flex;
+	gap: 8px;
+	align-items: center;
+	font-weight: 800;
+	color: #111827;
+	white-space: nowrap;
+}
+
+.selectlabel select {
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	padding: 8px 10px;
+	background: #fff;
+	font: inherit;
+	max-width: 46vw;
+	/* que no desborde en móviles */
+}
+
+@media (max-width: 480px) {
+	.selectlabel select {
+		width: 100%;
+		max-width: 100%;
+	}
+}

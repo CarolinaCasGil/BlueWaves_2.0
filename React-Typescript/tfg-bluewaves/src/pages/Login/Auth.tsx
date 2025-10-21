@@ -28,9 +28,11 @@ export default function Auth() {
 	const navigate = useNavigate()
 
 	useEffect(() => {
-		document.body.classList.add('no-scroll')
-		return () => { document.body.classList.remove('no-scroll') }
-	}, [])
+		document.body.classList.remove('no-scroll');
+		return () => {
+		};
+	}, []);
+
 
 	const looksLikeEmail = (s: string) => s.includes('@')
 
@@ -192,7 +194,7 @@ export default function Auth() {
 	}
 
 	return (
-		<main className="auth auth--compact">
+		<main className="auth auth--compact auth--register">
 			<section className="container auth__wrap">
 				<form className="auth__card" onSubmit={onSubmit}>
 					<h1 className="auth__title">{mode === 'login' ? 'Iniciar sesión' : 'Crear cuenta'}</h1>

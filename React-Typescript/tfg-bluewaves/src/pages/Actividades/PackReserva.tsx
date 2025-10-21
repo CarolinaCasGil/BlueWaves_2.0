@@ -1,146 +1,140 @@
 // src/pages/Actividades/PackReserva.tsx
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
+import { useRequireAuth } from '../../hooks/useRequireAuth'
+import './PackReserva.css'
 
-/** ===== Tipos auxiliares ===== */
-type HoraRow = { id: number; actividad_id: number; hora_inicio: string; hora_fin: string }
-type ActividadRow = { id: number; nombre?: string | null; cantidad?: number | null } // cantidad = capacidad por clase
-type PackRow = { id: number; titulo?: string | null; actividad_id: number; cant_act?: number | null; precio?: number | null }
-
-type UserPackRow = { fecha: string | null; cant_pers: number | null }
-type CountByDate = Record<string, number>
-
-type ClaseElegida = {
-	fecha: string | null
-	hora_id: number | null
-	cant_pers: number
+type Pack = {
+	id: number
+	titulo: string
+	descripcion?: string | null
+	costo?: number | null
+	actividad_id?: number | null
+	foto?: string | null
+	cant_actv?: number | null
+	cant_act?: number | null
+	cantidad?: number | null
+	[key: string]: any
 }
 
-const pad = (n: number) => (n < 10 ? `0${n}` : `${n}`)
-const toKey = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+type Hora = { id: number; hora_inicio: string; hora_fin: string }
+type RangoDisp = { fecha: string; hora_id: number; capacidad: number; reservadas: number; disponibles: number }
+type ClaseSel = { fecha: string | null; horaId: number | null }
 
-/** Cuenta cuántas plazas hay ocupadas por día para una hora concreta en un rango */
-async function getCountByDateForHour(
-	horaId: number,
-	fromISO: string,
-	toISO: string
-): Promise<CountByDate> {
-	const { data: upRows, error: upErr } = await supabase
-		.from('user_packs')
-		.select('fecha, cant_pers')
-		.eq('hora_id', horaId)
-		.gte('fecha', fromISO)
-		.lte('fecha', toISO)
-
-	if (upErr) throw upErr
-
-	const map: CountByDate = {}
-	for (const r of (upRows ?? []) as UserPackRow[]) {
-		if (!r.fecha) continue
-		const key = r.fecha.slice(0, 10) // YYYY-MM-DD
-		map[key] = (map[key] ?? 0) + Number(r.cant_pers ?? 0)
-	}
-	return map
+/** Fila devuelta por el RPC `clase_disponibilidad` */
+type RpcDisponibilidadRow = {
+	hora_id?: number | null
+	id?: number | null          // por si tu RPC devuelve `id` en lugar de `hora_id`
+	disponibles?: number | null
 }
 
-/** Devuelve lista de días con hueco para esa hora teniendo en cuenta la capacidad */
-async function buildEligibleDatesForHour(
-	horaId: number,
-	capacidadActividad: number,
-	fromISO: string,
-	toISO: string
-): Promise<string[]> {
-	const countsByDate = await getCountByDateForHour(horaId, fromISO, toISO)
+const money = (v?: number | null) =>
+	v == null ? '—' : new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(v)
 
-	const out: string[] = []
-	const start = new Date(fromISO)
-	const end = new Date(toISO)
-	start.setHours(0, 0, 0, 0)
-	end.setHours(0, 0, 0, 0)
-
-	for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-		const key = toKey(d)
-		const usados = countsByDate[key] ?? 0
-		if (usados < capacidadActividad) out.push(key)
-	}
-	return out
+const toISODate = (d: Date) => {
+	const z = new Date(d); z.setHours(0, 0, 0, 0)
+	const y = z.getFullYear(), m = `${z.getMonth() + 1}`.padStart(2, '0'), dd = `${z.getDate()}`.padStart(2, '0')
+	return `${y}-${m}-${dd}`
 }
+const todayISO = () => toISODate(new Date())
+const tomorrowISO = () => {
+	const d = new Date()
+	d.setDate(d.getDate() + 1)
+	return toISODate(d)
+}
+const fmtDDMMYYYY = (iso: string) => { const [y, m, d] = iso.split('-'); return `${d}-${m}-${y}` }
+const hhmm = (s: string) => s.slice(0, 5)
+const startOfMonth = (d: Date) => new Date(d.getFullYear(), d.getMonth(), 1)
+const endOfMonth = (d: Date) => new Date(d.getFullYear(), d.getMonth() + 1, 0)
+const addMonths = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth() + n, 1)
 
-/** ===== Componente ===== */
 export default function PackReserva() {
 	const { id } = useParams<{ id: string }>()
 	const packId = Number(id)
 	const nav = useNavigate()
+	const { requireAuth } = useRequireAuth()
 
 	const [loading, setLoading] = useState(true)
+	const [saving, setSaving] = useState(false)
 	const [err, setErr] = useState<string | null>(null)
 
-	const [pack, setPack] = useState<PackRow | null>(null)
-	const [actividad, setActividad] = useState<ActividadRow | null>(null)
-	const [horas, setHoras] = useState<HoraRow[]>([])
+	const [pack, setPack] = useState<Pack | null>(null)
+	const [horas, setHoras] = useState<Hora[]>([])
+	const [capacidadAct, setCapacidadAct] = useState<number | null>(null)
 
-	// Selección paso a paso (una clase cada vez → “Siguiente”)
-	const [step, setStep] = useState(0)
-	const [clases, setClases] = useState<ClaseElegida[]>([])
-	const [selectedHora, setSelectedHora] = useState<number | ''>('')
-	const [eligibleDates, setEligibleDates] = useState<string[]>([])
-	const [selectedDate, setSelectedDate] = useState<string>('')
 	const [personas, setPersonas] = useState<number>(1)
 
-	// Rango de búsqueda por defecto (hoy → hoy + 6 meses)
-	const today = useMemo(() => {
-		const d = new Date()
-		d.setHours(0, 0, 0, 0)
-		return toKey(d)
-	}, [])
-	const sixMonthsOut = useMemo(() => {
-		const d = new Date()
-		d.setMonth(d.getMonth() + 6, 1)
-		d.setHours(0, 0, 0, 0)
-		return toKey(d)
-	}, [])
+	const [selecciones, setSelecciones] = useState<ClaseSel[]>([])
+	const [step, setStep] = useState<number>(0)
 
-	// Carga pack + actividad + horas
+	const [selHoraId, setSelHoraId] = useState<number | null>(null)
+	const [selFecha, setSelFecha] = useState<string | null>(null)
+	const [stepErr, setStepErr] = useState<string | null>(null)
+
+	const [monthBase, setMonthBase] = useState<Date>(startOfMonth(new Date()))
+	const [monthDisp, setMonthDisp] = useState<Record<string, number>>({})
+	const [monthLoading, setMonthLoading] = useState(false)
+
+	const [editing, setEditing] = useState<boolean>(false)
+
+	const selectedKeySet = useMemo(() => {
+		const s = new Set<string>()
+		for (const c of selecciones) {
+			if (c.fecha && c.horaId) s.add(`${c.fecha}|${c.horaId}`)
+		}
+		return s
+	}, [selecciones])
+
+	const selectedKeySetExceptCurrent = useMemo(() => {
+		const s = new Set<string>()
+		selecciones.forEach((c, i) => {
+			if (i === step) return
+			if (c.fecha && c.horaId) s.add(`${c.fecha}|${c.horaId}`)
+		})
+		return s
+	}, [selecciones, step])
+
 	useEffect(() => {
 		let mounted = true
 			; (async () => {
 				try {
 					setLoading(true); setErr(null)
 
-					const { data: p, error: e1 } = await supabase
-						.from('packs')
-						.select('id, titulo, actividad_id, cant_act, precio')
-						.eq('id', packId)
-						.maybeSingle()
-					if (e1) throw e1
-					if (!p) throw new Error('Pack no encontrado')
-					const packRow = p as PackRow
+					const { data: pData, error: pErr } = await supabase
+						.from('packs').select('*').eq('id', packId).maybeSingle()
+					if (pErr) throw pErr
+					if (!pData) throw new Error('Pack no encontrado')
 
-					const { data: act, error: e2 } = await supabase
-						.from('actividades')
-						.select('id, nombre, cantidad')
-						.eq('id', packRow.actividad_id)
-						.maybeSingle()
-					if (e2) throw e2
-					const actRow = act as ActividadRow | null
+					const p = pData as Pack
+					if (!p.actividad_id) throw new Error('Este pack no tiene vinculada una actividad.')
+					setPack(p)
 
-					const { data: horasRows, error: e3 } = await supabase
+					const cant = Math.max(1, Number(p.cant_actv ?? p.cant_act ?? p.cantidad ?? 1))
+					setSelecciones(Array.from({ length: cant }, () => ({ fecha: null, horaId: null })))
+
+					const { data: hData, error: hErr } = await supabase
 						.from('actividad_horas')
-						.select('id, actividad_id, hora_inicio, hora_fin')
-						.eq('actividad_id', packRow.actividad_id)
+						.select('id,hora_inicio,hora_fin')
+						.eq('actividad_id', p.actividad_id)
 						.order('hora_inicio', { ascending: true })
-					if (e3) throw e3
+					if (hErr) throw hErr
+					setHoras((hData || []) as Hora[])
 
-					if (!mounted) return
-					setPack(packRow)
-					setActividad(actRow)
-					setHoras((horasRows ?? []) as HoraRow[])
+					const { data: capData, error: capErr } = await supabase
+						.from('actividades')
+						.select('capacidad')
+						.eq('id', p.actividad_id)
+						.maybeSingle()
+					if (capErr) throw capErr
+					setCapacidadAct(capData?.capacidad ?? null)
 
-					const cantAct = Math.max(1, Number(packRow.cant_act ?? 1))
-					setClases(Array.from({ length: cantAct }, () => ({ fecha: null, hora_id: null, cant_pers: 1 })))
+					setStep(0); setSelHoraId(null); setSelFecha(null)
+					setMonthBase(startOfMonth(new Date()))
+					setMonthDisp({})
+					setEditing(true)
 				} catch (e: any) {
-					if (mounted) setErr(e?.message ?? 'No se pudo cargar el pack')
+					if (mounted) setErr(e?.message ?? 'Error cargando el pack')
 				} finally {
 					if (mounted) setLoading(false)
 				}
@@ -148,183 +142,397 @@ export default function PackReserva() {
 		return () => { mounted = false }
 	}, [packId])
 
-	const capacidad = Number(actividad?.cantidad ?? 0)
+	const costoPackTotal = pack?.costo ?? 0
+	const total = useMemo(() => costoPackTotal * (personas || 1), [costoPackTotal, personas])
 
-	// Cuando elige hora, calculamos días elegibles
-	const computeEligibleDates = useCallback(async (horaId: number) => {
-		try {
-			setErr(null)
-			const dates = await buildEligibleDatesForHour(horaId, capacidad || 0, today, sixMonthsOut)
-			setEligibleDates(dates)
-		} catch (e: any) {
-			setEligibleDates([])
-			setErr(e?.message ?? 'No se pudo calcular disponibilidad')
-		}
-	}, [capacidad, sixMonthsOut, today])
+	const allFilled = useMemo(() => selecciones.every(s => s.fecha && s.horaId), [selecciones])
 
-	const nextClase = () => {
-		if (!selectedHora || !selectedDate) {
-			setErr('Selecciona hora y día para continuar')
+	useEffect(() => {
+		let mounted = true
+			; (async () => {
+				setStepErr(null)
+				setSelFecha(null)
+				setMonthDisp({})
+				if (!pack?.actividad_id || !selHoraId) return
+
+				const desdeISO = toISODate(startOfMonth(monthBase))
+				const hastaISO = toISODate(endOfMonth(monthBase))
+
+				try {
+					setMonthLoading(true)
+					const { data: rpcRowsAny, error } = await supabase.rpc(
+						'clase_disponibilidad_rango',
+						{
+							p_actividad_id: pack.actividad_id,
+							p_hora_id: selHoraId,
+							p_desde: desdeISO,
+							p_hasta: hastaISO
+						}
+					)
+					const rpcRows = (rpcRowsAny ?? []) as RangoDisp[]
+					if (error) throw error
+
+					const lista: RangoDisp[] = rpcRows ?? []
+					const map: Record<string, number> = {}
+					for (const r of lista) {
+						const f = typeof r.fecha === 'string' ? r.fecha : toISODate(new Date(r.fecha))
+						map[f] = Number(r.disponibles || 0)
+					}
+					if (!mounted) return
+					setMonthDisp(map)
+				} catch (e: any) {
+					if (!mounted) return
+					setMonthDisp({})
+					setStepErr(e?.message ?? 'No se pudo cargar la disponibilidad del mes.')
+				} finally {
+					if (mounted) setMonthLoading(false)
+				}
+			})()
+		return () => { mounted = false }
+	}, [pack?.actividad_id, selHoraId, monthBase])
+
+	const onPersonasChange = (raw: number) => {
+		const val = Math.max(1, Number(raw || 1))
+		if (capacidadAct && val > capacidadAct) {
+			setPersonas(capacidadAct)
+			setStepErr(`La actividad admite como máximo ${capacidadAct} personas por clase.`)
+			if (selFecha && monthDisp[selFecha] != null && monthDisp[selFecha] < capacidadAct) {
+				setSelFecha(null)
+			}
 			return
 		}
-		const next = [...clases]
-		next[step] = {
-			fecha: selectedDate,
-			hora_id: Number(selectedHora),
-			cant_pers: personas,
-		}
-		setClases(next)
-
-		// Reset selección para la siguiente clase si existe
-		setSelectedHora('')
-		setSelectedDate('')
-		setPersonas(1)
-
-		if (step + 1 < next.length) {
-			setStep(step + 1)
+		setPersonas(val)
+		if (selFecha && monthDisp[selFecha] != null && monthDisp[selFecha] < val) {
+			setSelFecha(null)
+			setStepErr(`Para ese día solo quedan ${monthDisp[selFecha]} plazas.`)
+		} else {
+			setStepErr(null)
 		}
 	}
 
-	const editarClase = (idx: number) => {
-		// Llevar al usuario a editar la clase idx
-		setStep(idx)
-		const c = clases[idx]
-		setSelectedHora(c.hora_id ?? '')
-		setSelectedDate(c.fecha ?? '')
-		setPersonas(c.cant_pers || 1)
-		if (c.hora_id) computeEligibleDates(c.hora_id)
-	}
+	const guardarClaseYSiguiente = () => {
+		setStepErr(null)
+		if (!selHoraId) { setStepErr('Elige una hora.'); return }
+		if (!selFecha) { setStepErr('Elige un día disponible.'); return }
 
-	const confirmarReserva = async () => {
-		try {
-			setErr(null)
-			// Comprobación final de capacidad por cada clase (fecha y hora)
-			for (const c of clases) {
-				if (!c.fecha || !c.hora_id) throw new Error('Faltan clases por completar')
-				// Recuento del día
-				const counts = await getCountByDateForHour(c.hora_id, c.fecha, c.fecha)
-				const ocupadas = counts[c.fecha] ?? 0
-				if (capacidad && ocupadas + (c.cant_pers || 1) > capacidad) {
-					throw new Error(`La clase del ${c.fecha} supera la capacidad (${capacidad}). Ajusta personas u hora.`)
-				}
+		const key = `${selFecha}|${selHoraId}`
+		if (selectedKeySetExceptCurrent.has(key)) {
+			setStepErr('Ya has elegido esa combinación de día y hora para otra clase.')
+			return
+		}
+
+		setSelecciones(prev => {
+			const next = [...prev]
+			next[step] = { fecha: selFecha!, horaId: selHoraId! }
+
+			const filled = next.every(s => s.fecha && s.horaId)
+			if (filled) setEditing(false)
+			else if (step < next.length - 1) {
+				setStep(step + 1)
+				setSelHoraId(null)
+				setSelFecha(null)
+				setMonthBase(startOfMonth(new Date()))
+				setMonthDisp({})
 			}
-
-			// Insert simbólico: normalmente aquí harías el pago y luego inserts
-			const { data: sessionRes } = await supabase.auth.getSession()
-			const userId = sessionRes?.session?.user?.id
-			if (!userId) throw new Error('No hay sesión activa')
-
-			const rows = clases.map(c => ({
-				user_id: userId,
-				pack_id: packId,
-				hora_id: c.hora_id!,
-				fecha: c.fecha!,
-				cant_pers: c.cant_pers || 1,
-			}))
-
-			const { error } = await supabase.from('user_packs').insert(rows)
-			if (error) throw error
-
-			alert('¡Reserva de pack creada!')
-			nav('/login')
-		} catch (e: any) {
-			setErr(e?.message ?? 'No se pudo crear la reserva')
-		}
+			return next
+		})
 	}
 
-	const hhmm = (t?: string | null) => (t ? t.slice(0, 5) : '—')
-	const horaActual = useMemo(() => horas.find(h => h.id === Number(selectedHora)) ?? null, [horas, selectedHora])
+	const editarClase = (i: number) => {
+		const curr = selecciones[i]
+		setStep(i)
+		setSelHoraId(curr.horaId)
+		setSelFecha(curr.fecha)
+		if (curr.fecha) {
+			const [y, m] = curr.fecha.split('-').map(Number)
+			setMonthBase(new Date(y, (m - 1), 1))
+		}
+		setEditing(true)
+		window.scrollTo({ top: 0, behavior: 'smooth' })
+	}
+
+	const confirmarPagoYReservar = async () => {
+		for (let i = 0; i < selecciones.length; i++) {
+			const s = selecciones[i]
+			if (!s.fecha || !s.horaId) {
+				alert(`Te falta completar la clase #${i + 1}`)
+				return
+			}
+		}
+
+		requireAuth(async () => {
+			try {
+				setSaving(true)
+				const { data: sessionRes } = await supabase.auth.getSession()
+				const userId = sessionRes?.session?.user?.id
+				if (!userId) throw new Error('No hay sesión activa')
+				if (!pack?.actividad_id) throw new Error('Pack sin actividad vinculada')
+
+				// Revalidación final por día (TIPADO EXPLÍCITO AQUÍ)
+				const fechasUnicas: string[] = Array.from(new Set(selecciones.map(s => s.fecha!).filter(Boolean)))
+				const mapa: Record<string, Record<number, number>> = {}
+
+				for (const f of fechasUnicas) {
+					const { data: rowsAny, error: rpcErr } = await supabase.rpc(
+						'clase_disponibilidad',
+						{
+							p_actividad_id: pack.actividad_id,
+							p_fecha: f
+						} as any
+					)
+					const rows = (rowsAny ?? []) as RpcDisponibilidadRow[]
+					if (rpcErr) throw rpcErr
+
+					const arr: RpcDisponibilidadRow[] = rows ?? []
+					const bucket: Record<number, number> = {}
+					for (const r of arr) {
+						const hid = Number((r.hora_id ?? r.id) ?? 0)
+						const disp = Number(r.disponibles ?? 0)
+						if (hid) bucket[hid] = disp
+					}
+					mapa[f] = bucket
+				}
+
+				for (let i = 0; i < selecciones.length; i++) {
+					const s = selecciones[i]
+					const disp = (mapa[s.fecha!] ?? {})[s.horaId!]
+					if (disp == null || disp < (personas || 1)) {
+						throw new Error(`La clase #${i + 1} ya no tiene suficientes plazas en ${fmtDDMMYYYY(s.fecha!)} (quedan ${disp ?? 0}).`)
+					}
+				}
+
+				const filas = selecciones.map(s => ({
+					user_id: userId,
+					pack_id: pack!.id,
+					fecha: s.fecha!,
+					hora_id: s.horaId!,
+					cant_pers: personas
+				}))
+				const { error } = await supabase.from('user_packs').insert(filas)
+				if (error) throw error
+
+				alert('¡Reserva de pack realizada! (pago simbólico)')
+				nav('/login')
+			} catch (e: any) {
+				alert(e?.message ?? 'No se pudo completar la reserva')
+			} finally {
+				setSaving(false)
+			}
+		})
+	}
+
+	const monthDaysGrid = useMemo(() => {
+		const start = startOfMonth(monthBase)
+		const end = endOfMonth(monthBase)
+		const startWeekday = (start.getDay() + 6) % 7
+		const totalDays = end.getDate()
+		const cells: ({ iso: string, num: number } | null)[] = []
+		for (let i = 0; i < startWeekday; i++) cells.push(null)
+		for (let i = 1; i <= totalDays; i++) {
+			const d = new Date(monthBase.getFullYear(), monthBase.getMonth(), i)
+			cells.push({ iso: toISODate(d), num: i })
+		}
+		return cells
+	}, [monthBase])
+
+	const showWizard = editing || !allFilled
 
 	return (
-		<main className="container" style={{ padding: '20px 0' }}>
-			{loading && <div className="state">Cargando…</div>}
-			{err && <div className="state state--error">Error: {err}</div>}
-			{!loading && !err && pack && actividad && (
-				<section>
-					<header style={{ marginBottom: 12 }}>
-						<h1>Reservar pack: {pack.titulo ?? `#${pack.id}`}</h1>
-						<p>Actividad: {actividad.nombre ?? `#${actividad.id}`} · Capacidad por clase: <strong>{capacidad || '—'}</strong></p>
-					</header>
+		<main className="packres">
+			<header className="packres__hero">
+				<div className="container packres__heroInner">
+					<h1 className="packres__title">Reservar pack</h1>
+					{pack && <p className="packres__sub">{pack.titulo}</p>}
+				</div>
+			</header>
 
-					{/* Paso actual */}
-					<div className="card" style={{ padding: 16, marginBottom: 16 }}>
-						<h2>Clase {step + 1} de {clases.length}</h2>
+			{loading && <div className="container state">Cargando…</div>}
+			{err && <div className="container state state--error">Error: {err}</div>}
 
-						<div style={{ display: 'grid', gap: 12, gridTemplateColumns: 'minmax(220px, 360px) 1fr' }}>
-							<label className="auth__label">
-								Hora
-								<select
-									value={selectedHora}
-									onChange={async (e) => {
-										const v = e.target.value ? Number(e.target.value) : ''
-										setSelectedHora(v as any)
-										setSelectedDate('')
-										if (typeof v === 'number') await computeEligibleDates(v)
-									}}
+			{!loading && !err && pack && (
+				<section className="container packres__wrap">
+					<div className="packres__grid">
+
+						{/* IZQUIERDA: Wizard */}
+						{showWizard ? (
+							<article className="packres-card">
+								<div className="packres-steps">
+									<div className="packres-steps__title">
+										Clase #{step + 1} de {selecciones.length}
+									</div>
+									<div className="packres-steps__subtitle">
+										Elige primero la <strong>hora</strong> y después un <strong>día disponible</strong>.
+									</div>
+								</div>
+
+								<div className="packres__people">
+									<label className="auth__label">
+										Personas
+										<input
+											type="number"
+											min={1}
+											max={capacidadAct ?? undefined}
+											value={personas}
+											onChange={e => onPersonasChange(Number(e.target.value))}
+											inputMode="numeric"
+										/>
+									</label>
+									{capacidadAct != null && (
+										<div className="packres-help">Capacidad máx. por clase: {capacidadAct}</div>
+									)}
+								</div>
+
+								<div className="packres__hora">
+									<label className="auth__label">
+										Hora
+										<select
+											value={selHoraId ?? ''}
+											onChange={e => setSelHoraId(e.target.value ? Number(e.target.value) : null)}
+										>
+											<option value="" disabled>Selecciona una hora</option>
+											{horas.map(h => (
+												<option key={h.id} value={h.id}>
+													{hhmm(h.hora_inicio)}–{hhmm(h.hora_fin)}
+												</option>
+											))}
+										</select>
+									</label>
+								</div>
+
+								{selHoraId && (
+									<div className="packres-month">
+										<div className="packres-month__toolbar">
+											<button
+												className="packres-month__btn"
+												onClick={() => setMonthBase(addMonths(monthBase, -1))}
+												aria-label="Mes anterior"
+											>
+												‹
+											</button>
+											<div className="packres-month__title">
+												{monthBase.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
+											</div>
+											<button
+												className="packres-month__btn"
+												onClick={() => setMonthBase(addMonths(monthBase, 1))}
+												aria-label="Mes siguiente"
+											>
+												›
+											</button>
+										</div>
+
+										<div className="bw-dp__grid">
+											{['L', 'M', 'X', 'J', 'V', 'S', 'D'].map(d => <div className="bw-dp__dow" key={d}>{d}</div>)}
+
+											{monthDaysGrid.map((cell, i) => {
+												if (!cell) return <div className="bw-dp__cell is-empty" key={`e${i}`} />
+												const iso = cell.iso
+												const isPast = iso < tomorrowISO()
+												const hasData = Object.prototype.hasOwnProperty.call(monthDisp, iso)
+												const disp = monthDisp[iso]
+												const duplicateForThisHour = selectedKeySetExceptCurrent.has(`${iso}|${selHoraId}`)
+												const ok = hasData ? disp >= (personas || 1) : false
+												const disabled = !ok || isPast || duplicateForThisHour
+
+												const classes = [
+													'bw-dp__cell',
+													monthLoading && 'is-loading',
+													disabled && 'is-disabled',
+													selFecha === iso && 'is-from'
+												].filter(Boolean).join(' ')
+
+												return (
+													<button
+														type="button"
+														key={iso}
+														className={classes}
+														onClick={() => disabled ? undefined : setSelFecha(iso)}
+														disabled={disabled || monthLoading}
+														title={
+															duplicateForThisHour ? 'Ya elegiste esta combinación día+hora' :
+																monthLoading ? 'Cargando…' :
+																	!ok ? 'Completo' :
+																		`${fmtDDMMYYYY(iso)} · disp: ${disp}`
+														}
+													>
+														<div className="daynum">{cell.num}</div>
+													</button>
+												)
+											})}
+										</div>
+									</div>
+								)}
+
+								{stepErr && <div className="packres-msg packres-msg--err">{stepErr}</div>}
+
+								<div className="packres__ctas">
+									<button className="btn btn--primary" onClick={guardarClaseYSiguiente} disabled={!selHoraId || !selFecha}>
+										{step === selecciones.length - 1 ? 'Guardar clase' : 'Guardar clase y siguiente'}
+									</button>
+								</div>
+							</article>
+						) : (
+							<article className="packres-card packres-card--done">
+								<h2 className="packres-card__title">Clases completadas</h2>
+								<p>Ya has seleccionado todas las clases. Puedes revisarlas a la derecha y completar la reserva.</p>
+							</article>
+						)}
+
+						{/* DERECHA: resumen + pagar */}
+						<aside className="packres-card packres-card--summary">
+							<h2 className="packres-card__title">Resumen</h2>
+
+							<ul className="packres-summary">
+								{selecciones.map((s, i) => {
+									const h = horas.find(x => x.id === s.horaId)
+									return (
+										<li key={i} className="packres-summary__item">
+											<div className="packres-summary__left">
+												<div className="packres-summary__title">Clase #{i + 1}</div>
+												<div className="packres-summary__meta">
+													<span>{s.fecha ? fmtDDMMYYYY(s.fecha) : '—'}</span>
+													<span>·</span>
+													<span>{h ? `${hhmm(h.hora_inicio)}–${hhmm(h.hora_fin)}` : '—'}</span>
+												</div>
+											</div>
+											<div className="packres-summary__right">
+												<button className="btn btn--ghost btn--sm" onClick={() => editarClase(i)}>Editar</button>
+											</div>
+										</li>
+									)
+								})}
+							</ul>
+
+							<div className="packres-divider" />
+
+							<div className="packres-row">
+								<div className="packres-row__label">Precio pack (total)</div>
+								<div className="packres-row__value">{money(pack.costo)}</div>
+							</div>
+							<div className="packres-row">
+								<div className="packres-row__label">Personas</div>
+								<div className="packres-row__value">{personas}</div>
+							</div>
+
+							<div className="packres-total">
+								<div className="packres-total__label">Total</div>
+								<div className="packres-total__value">{money(total)}</div>
+							</div>
+
+							<div className="packres__ctas packres__ctas--end">
+								<button
+									className="btn btn--primary"
+									onClick={confirmarPagoYReservar}
+									disabled={saving || !allFilled}
 								>
-									<option value="">Elige una hora</option>
-									{horas.map(h => (
-										<option key={h.id} value={h.id}>
-											{hhmm(h.hora_inicio)}–{hhmm(h.hora_fin)}
-										</option>
-									))}
-								</select>
-							</label>
-
-							<div style={{ display: 'flex', gap: 12, alignItems: 'flex-end', flexWrap: 'wrap' }}>
-								<label className="auth__label">
-									Día disponible
-									<select
-										value={selectedDate}
-										onChange={(e) => setSelectedDate(e.target.value)}
-										disabled={!selectedHora}
-									>
-										<option value="">Elige un día</option>
-										{eligibleDates.map(d => (
-											<option key={d} value={d}>{d.split('-').reverse().join('-')}</option>
-										))}
-									</select>
-								</label>
-
-								<label className="auth__label">
-									Personas
-									<input
-										type="number"
-										min={1}
-										value={personas}
-										onChange={(e) => setPersonas(Math.max(1, Number(e.target.value || 1)))}
-										inputMode="numeric"
-									/>
-								</label>
-
-								<button className="btn btn--primary" type="button" onClick={nextClase}>
-									{step + 1 < clases.length ? 'Siguiente clase' : 'Añadir y revisar'}
+									{saving ? 'Procesando…' : 'Pagar y reservar'}
 								</button>
 							</div>
-						</div>
-					</div>
 
-					{/* Resumen */}
-					<div className="card" style={{ padding: 16 }}>
-						<h3>Resumen</h3>
-						{clases.map((c, i) => {
-							const h = c.hora_id ? horas.find(x => x.id === c.hora_id) : null
-							return (
-								<div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'center', padding: '8px 0', borderTop: '1px solid #eee' }}>
-									<div>
-										<strong>Clase {i + 1}:</strong>{' '}
-										{c.fecha ? c.fecha.split('-').reverse().join('-') : '—'}{' '}
-										{h ? `· ${hhmm(h.hora_inicio)}–${hhmm(h.hora_fin)}` : ''}{' '}
-										{c.cant_pers ? `· ${c.cant_pers}x👤` : ''}
-									</div>
-									<button className="btn btn--ghost btn--sm" onClick={() => editarClase(i)}>Editar</button>
-								</div>
-							)
-						})}
-
-						<div style={{ marginTop: 12, display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-							<button className="btn btn--primary" onClick={confirmarReserva}>Confirmar pack</button>
-						</div>
+							<p className="packres-note">
+								Pago simbólico (no real). Duplicados bloqueados y disponibilidad revalidada antes de guardar.
+							</p>
+						</aside>
 					</div>
 				</section>
 			)}

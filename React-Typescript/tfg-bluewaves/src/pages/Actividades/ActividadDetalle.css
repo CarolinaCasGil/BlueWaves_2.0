@@ -3,6 +3,7 @@
 	position: relative;
 	color: #fff;
 	background: #000;
+	border-bottom: 0;
 }
 
 .actd-hero__bg {
@@ -37,10 +38,10 @@
 .actd-hero__inner {
 	position: relative;
 	z-index: 1;
-	min-height: 44vh;
 	display: grid;
 	align-items: end;
 	padding: 24px 0;
+	min-height: clamp(260px, 44vh, 520px);
 }
 
 .actd-hero__text {
@@ -363,7 +364,7 @@
 }
 
 .alojcard__chips {
-	margin-top: auto; 
+	margin-top: auto;
 	display: flex;
 	gap: 8px;
 	flex-wrap: wrap;
@@ -391,4 +392,40 @@
 
 .state--error {
 	color: #b91c1c;
+}
+
+/* =========================
+   FIXES RESPONSIVE (añadir al final)
+   ========================= */
+
+
+/* 3) Imágenes de cards con proporción fija (sin deformaciones) */
+.tile__media img,
+.alojcard__media img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/* Usa aspect-ratio cuando esté disponible: */
+@supports (aspect-ratio: 16 / 9) {
+
+	.tile__media,
+	.alojcard__media {
+		height: auto !important;
+		/* sobrescribe alturas fijas previas */
+		aspect-ratio: 16 / 9;
+		/* foto panorámica uniforme */
+	}
+}
+
+/* Ajuste extra para móviles muy estrechos por si no hay soporte de aspect-ratio */
+@media (max-width: 560px) {
+	.tile__media {
+		height: auto;
+	}
+
+	.alojcard__media {
+		height: auto;
+	}
 }

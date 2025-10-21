@@ -1,3 +1,4 @@
+// src/pages/Actividades/ActividadDetalle.tsx
 import { useEffect, useMemo, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { PackService, type Pack } from '../../services/packs'
@@ -5,14 +6,6 @@ import { ActividadesService, type Actividad } from '../../services/actividades'
 import { AlojamientoService, type Alojamiento } from '../../services/alojamientos'
 import './ActividadDetalle.css'
 
-function getActividadIdFromPack(p: Pack): number | null {
-	const anyPack = p as any
-	return (Number(anyPack.actividad_id ?? anyPack.avtividad_id) || null)
-}
-function getActividadIdFromAloj(a: Alojamiento): number | null {
-	const anyAloj = a as any
-	return (Number(anyAloj.actividad_id ?? anyAloj.avtividad_id) || null)
-}
 function money(v?: number | null) {
 	if (v == null) return '—'
 	return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(v)
@@ -50,23 +43,44 @@ export default function ActividadDetalle() {
 					if (mounted) setLoading(false)
 				}
 			})()
-		return () => { mounted = false }
+		return () => {
+			mounted = false
+		}
 	}, [actividadId])
 
+	// Packs de esta actividad (packs.actividad_id === actividadId)
 	const packsForActivity = useMemo(
-		() => packs.filter((p) => getActividadIdFromPack(p) === actividadId),
+		() =>
+			packs.filter((p) => {
+				const anyP = p as any
+				const actId = Number(anyP.actividad_id ?? anyP.id_actividad ?? anyP.avtividad_id)
+				return Number.isFinite(actId) && actId === actividadId
+			}),
 		[packs, actividadId]
 	)
 
+	// Alojamientos para esta actividad:
+	// 1) Caso normal: aloj.pack_id apunta a un pack; si ese pack es de esta actividad -> lo mostramos
+	// 2) Fallback (tu BD): aloj.pack_id guarda directamente el id de la actividad -> también lo mostramos
 	const alojForActivity = useMemo(() => {
-		const direct = alojamientos.filter((a) => getActividadIdFromAloj(a) === actividadId)
-		if (direct.length > 0) return direct
-		const packIds = new Set(packsForActivity.map((p) => p.id))
-		return alojamientos.filter((a) => {
-			const anyA = a as any
-			const packId = Number(anyA.pack_id ?? anyA.id_pack)
-			return packId && packIds.has(packId)
+		const packIds = new Set<number>(
+			packsForActivity.map((p) => Number((p as any).id)).filter(Number.isFinite)
+		)
+
+		const filtered = alojamientos.filter((a) => {
+			const pid = Number((a as any).pack_id ?? (a as any).id_pack ?? (a as any).packId)
+			if (!Number.isFinite(pid)) return false
+
+			// caso 1: pack_id -> pack y ese pack pertenece a esta actividad
+			if (packIds.size > 0 && packIds.has(pid)) return true
+
+			// caso 2 (fallback): pack_id guarda directamente el id de la actividad
+			if (pid === actividadId) return true
+
+			return false
 		})
+
+		return filtered.slice(0, 3) // máximo 3 alojamientos
 	}, [alojamientos, packsForActivity, actividadId])
 
 	const title = actividad?.nombre ?? 'Actividad'
@@ -89,7 +103,11 @@ export default function ActividadDetalle() {
 					<div className="actd-hero__text">
 						<h1 className="actd-title">{title}</h1>
 						<p className="actd-sub">{subtitle}</p>
-
+						{precioDesde != null && (
+							<div className="actd-chip">
+								Desde <strong>{money(precioDesde)}</strong>
+							</div>
+						)}
 					</div>
 				</div>
 
@@ -100,6 +118,7 @@ export default function ActividadDetalle() {
 				</div>
 			</header>
 
+			{/* PACKS */}
 			<section className="container list" id="packs">
 				<div className="list__head">
 					<h2 className="list__title">Packs disponibles</h2>
@@ -125,11 +144,14 @@ export default function ActividadDetalle() {
 
 				{!loading && !error && packsForActivity.length > 0 && (
 					<div className="tiles">
-						{packsForActivity.map((p) => <PackTile key={p.id} p={p} />)}
+						{packsForActivity.map((p) => (
+							<PackTile key={p.id} p={p} />
+						))}
 					</div>
 				)}
 			</section>
 
+			{/* ALOJAMIENTOS */}
 			<section className="container aloj">
 				<div className="list__head">
 					<h2 className="list__title">Alojamientos para esta actividad</h2>
@@ -153,7 +175,9 @@ export default function ActividadDetalle() {
 
 				{!loading && !error && alojForActivity.length > 0 && (
 					<div className="aloj-grid">
-						{alojForActivity.map((a) => <AlojCard key={a.id} a={a} />)}
+						{alojForActivity.map((a) => (
+							<AlojCard key={a.id} a={a} />
+						))}
 					</div>
 				)}
 			</section>
@@ -185,7 +209,6 @@ function PackTile({ p }: { p: Pack }) {
 				<Link to={`/packs/${p.id}/reservar`} className="btn btn--primary btn--sm">
 					Reservar pack
 				</Link>
-
 			</div>
 		</article>
 	)
@@ -196,7 +219,6 @@ function AlojCard({ a }: { a: Alojamiento }) {
 	const fotos = [anyA.foto1, anyA.foto2, anyA.foto3, anyA.foto4].filter(Boolean) as string[]
 	const foto = fotos[0]
 	const precio = (anyA.costo as number | undefined) ?? null
-	const capacidad = (anyA.capacidad as number | undefined) ?? null
 	const lugar = (anyA.lugar as string | undefined) ?? (anyA.direccion as string | undefined)
 
 	return (

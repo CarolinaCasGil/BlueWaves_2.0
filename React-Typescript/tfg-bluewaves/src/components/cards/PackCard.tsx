@@ -1,3 +1,4 @@
+// src/components/cards/PackCard.tsx
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Pack } from '../../services/packs'
@@ -15,13 +16,14 @@ export default function PackCard({ pack }: Props) {
 	const nav = useNavigate()
 	const { requireAuth } = useRequireAuth()
 
-	const goToDetail = useCallback(async () => {
-		nav(`/packs/${pack.id}`)
+	const goToReserva = useCallback(() => {
+		// Navegamos con URL + state
+		nav(`/packs/${pack.id}/reservar`, { state: { packId: pack.id } })
 	}, [nav, pack.id])
 
 	const onReservar = (e: React.MouseEvent) => {
 		e.preventDefault()
-		requireAuth(goToDetail)
+		requireAuth(goToReserva)
 	}
 
 	return (
@@ -39,6 +41,7 @@ export default function PackCard({ pack }: Props) {
 				<div className="card__meta">
 					<span className="price">{money(pack.costo)}</span>
 					<button
+						type="button"
 						className="btn btn--primary btn--sm"
 						aria-label={`Reservar ${pack.titulo}`}
 						onClick={onReservar}

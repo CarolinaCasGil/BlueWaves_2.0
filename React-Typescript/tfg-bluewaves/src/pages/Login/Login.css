@@ -9,10 +9,11 @@ body {
 	background: #fff;
 }
 
+/* Usa unidades de viewport modernas para móviles con barra dinámica */
 .loginp {
 	display: grid;
 	grid-template-rows: auto 1fr;
-	min-height: calc(100vh - var(--footer-h));
+	min-height: calc(100svh - var(--footer-h));
 	overflow: hidden;
 	background: #fff;
 }
@@ -20,9 +21,10 @@ body {
 .loginp__wrap {
 	height: 100%;
 	overflow: hidden;
-	/* no hacer scroll aquí */
+	/* no scroll aquí */
 }
 
+/* ====== GRID PRINCIPAL ====== */
 .loginp__grid {
 	display: grid;
 	grid-template-columns: 360px 1fr;
@@ -31,12 +33,20 @@ body {
 	height: 100%;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
 	.loginp__grid {
-		grid-template-columns: 1fr;
+		grid-template-columns: 300px 1fr;
 	}
 }
 
+@media (max-width: 900px) {
+	.loginp__grid {
+		grid-template-columns: 1fr;
+		/* apilar en móvil */
+	}
+}
+
+/* ====== CARDS ====== */
 .loginp-card {
 	background: #fff;
 	border: 1px solid #e5e7eb;
@@ -46,6 +56,14 @@ body {
 	flex-direction: column;
 	height: 90%;
 	min-height: 0;
+	/* clave para flex + overflow */
+}
+
+@media (max-width: 900px) {
+	.loginp-card {
+		height: auto;
+		/* en móvil dejamos crecer */
+	}
 }
 
 .loginp-card--profile {
@@ -55,8 +73,21 @@ body {
 .loginp-card--data {
 	padding: 18px;
 	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	min-height: 520px;
+	max-height: calc(100svh - var(--footer-h) - 80px);
 }
 
+@media (max-width: 900px) {
+	.loginp-card--data {
+		min-height: 0;
+		max-height: none;
+		/* que crezca en móvil */
+	}
+}
+
+/* ====== CABECERA PERFIL ====== */
 .loginp__head {
 	display: flex;
 	align-items: center;
@@ -77,6 +108,15 @@ body {
 	color: #111827;
 	background: #f3f4f6;
 	border: 1px solid #e5e7eb;
+}
+
+@media (max-width: 480px) {
+	.loginp__avatar {
+		width: 56px;
+		height: 56px;
+		min-width: 56px;
+		font-size: 18px;
+	}
 }
 
 .loginp__name {
@@ -121,12 +161,19 @@ body {
 	margin-top: auto;
 }
 
+/* ====== TABS (STICKY) ====== */
 .loginp-tabs {
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	background: #fff;
+	padding-bottom: 6px;
 	display: flex;
 	gap: 10px;
 	margin-bottom: 14px;
 	flex-wrap: wrap;
 	flex: 0 0 auto;
+	border-bottom: 1px solid #f1f5f9;
 }
 
 .loginp-tab {
@@ -143,6 +190,7 @@ body {
 	box-shadow: 0 0 0 3px rgba(147, 197, 253, .35);
 }
 
+/* ====== LISTAS (GENÉRICAS) ====== */
 .loginp-card--data>.loginp-list,
 .loginp-card--data>div .loginp-list {
 	overflow: hidden;
@@ -199,6 +247,7 @@ body {
 	background: #f9fafb;
 }
 
+/* ====== ESTADOS ====== */
 .loginp__state {
 	padding: 12px;
 	border: 1px dashed #e5e7eb;
@@ -212,6 +261,7 @@ body {
 	color: #991b1b;
 }
 
+/* ====== HERO DEL LOGIN ====== */
 .loginp__heroInner {
 	padding: 16px 0;
 }
@@ -229,15 +279,7 @@ body {
 	font-size: 14px;
 }
 
-/* Panel derecho con scroll interno */
-.loginp-card--data {
-	display: flex;
-	flex-direction: column;
-	min-height: 520px;
-	max-height: calc(100vh - var(--footer-h) - 80px);
-	overflow: hidden;
-}
-
+/* ====== SCROLL INTERNO DEL PANEL DERECHO ====== */
 .loginp-card--data .loginp-vlist,
 .loginp-card--data .loginp__state {
 	flex: 1 1 auto;
@@ -245,7 +287,26 @@ body {
 	padding-right: 4px;
 }
 
-/* Grid de tarjetas (hasta 4 por fila) */
+.loginp__grid>* {
+	min-height: 0;
+}
+
+.loginp-card--data>.loginp-vlist,
+.loginp-card--data>.loginp__state {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-y: auto;
+	padding-right: 4px;
+}
+
+.loginp-card--data .loginp-scroll {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-y: auto;
+	padding-right: 2px;
+}
+
+/* ====== GRID DE TARJETAS (ACTIVIDADES) ====== */
 .loginp-vlist {
 	display: grid;
 	gap: 14px;
@@ -270,6 +331,7 @@ body {
 	}
 }
 
+/* ====== TARJETA (ACTIVIDADES) ====== */
 .loginp-vcardLink {
 	text-decoration: none;
 	color: inherit;
@@ -292,6 +354,7 @@ body {
 	border-color: #e2e2e2;
 }
 
+/* Imagen responsiva y uniforme */
 .loginp-vcard__media img,
 .loginp-vcard__ph {
 	width: 100%;
@@ -326,41 +389,15 @@ body {
 	color: #6b7280;
 }
 
+/* Fecha pasada en rojo */
 .loginp-vcard__date.is-past {
 	color: #dc2626;
 	font-weight: 600;
 }
 
-
-.loginp__grid>* {
-	min-height: 0;
-}
-
-.loginp-card--data>.loginp-tabs {
-	flex: 0 0 auto;
-}
-
-.loginp-card--data>.loginp-vlist,
-.loginp-card--data>.loginp__state {
-	flex: 1 1 auto;
-	min-height: 0;
-	overflow-y: auto;
-	padding-right: 4px;
-}
-
-.loginp-card--data>div>.loginp-vlist {
-	flex: 1 1 auto;
-	min-height: 0;
-	overflow-y: auto;
-}
-
-.loginp__grid>* {
-	min-height: 0;
-}
-
-.loginp-card--data .loginp-scroll {
-	flex: 1 1 auto;
-	min-height: 0;
-	overflow-y: auto;
-	padding-right: 2px;
+/* ====== FALLBACKS PARA ALTURAS BAJAS (móvil apaisado) ====== */
+@media (max-height: 640px) {
+	.loginp-card--data {
+		max-height: calc(100svh - 100px);
+	}
 }

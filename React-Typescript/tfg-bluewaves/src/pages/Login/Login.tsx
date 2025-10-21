@@ -1,3 +1,4 @@
+// src/pages/Login/Login.tsx
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
@@ -29,10 +30,11 @@ export type Reserva = {
 	id: number
 	fecha_entrada?: string | null
 	fecha_salida?: string | null
-	personas?: number | null            // 👈 NUEVO
+	personas?: number | null
 	alojamiento?: { id: number; nombre?: string | null; foto1?: string | null } | null
 }
 
+/** 👇 Este tipo debe coincidir con lo que espera ActividadesList */
 export type ActividadItem = {
 	id: number
 	fecha: string | null
@@ -75,6 +77,7 @@ export default function LoginPage() {
 
 	const [pedidos, setPedidos] = useState<Pedido[]>([])
 	const [reservas, setReservas] = useState<Reserva[]>([])
+	/** 👇 Cambiamos el tipo del estado a ActividadItem[] */
 	const [actividades, setActividades] = useState<ActividadItem[]>([])
 
 	const initialTab = (localStorage.getItem(TAB_KEY) as Tab) || 'pedidos'
@@ -121,7 +124,7 @@ export default function LoginPage() {
 			.eq('user_id', userId)
 			.order('fecha_pedido', { ascending: false })
 
-		// RESERVAS (añadimos personas)
+		// RESERVAS
 		const reservasQ = supabase
 			.from('reservas')
 			.select(`
@@ -168,7 +171,7 @@ export default function LoginPage() {
 			id: row.id,
 			fecha_entrada: row.fecha_entrada ?? null,
 			fecha_salida: row.fecha_salida ?? null,
-			personas: row.personas ?? null, // 👈 NUEVO
+			personas: row.personas ?? null,
 			alojamiento: row.alojamiento ? {
 				id: row.alojamiento.id,
 				nombre: row.alojamiento.nombre ?? null,
@@ -176,7 +179,8 @@ export default function LoginPage() {
 			} : null,
 		})))
 
-		setActividades((actividadesRes.data ?? []).map((row: any) => ({
+		/** 👇 Mapeamos exactamente al tipo ActividadItem */
+		setActividades((actividadesRes.data ?? []).map((row: any): ActividadItem => ({
 			id: row.id,
 			fecha: row.fecha ?? null,
 			cant_pers: row.cant_pers ?? null,
@@ -199,23 +203,22 @@ export default function LoginPage() {
 
 	// Montaje
 	useEffect(() => {
-		let mounted = true
-			; (async () => {
-				try {
-					setLoading(true)
-					const { data: { session } } = await supabase.auth.getSession()
-					if (!session) { nav('/auth', { replace: true }); return }
-					const user = session.user
-					if (!mounted) return
-					setAuthEmail(user.email ?? null)
-					const uid = uidParam || user.id
-					await loadAll(uid, user.email ?? null)
-				} catch (e: any) {
-					if (mounted) setErr(e?.message ?? 'Error cargando los datos')
-				} finally {
-					if (mounted) setLoading(false)
-				}
-			})()
+		let mounted = true; (async () => {
+			try {
+				setLoading(true)
+				const { data: { session } } = await supabase.auth.getSession()
+				if (!session) { nav('/auth', { replace: true }); return }
+				const user = session.user
+				if (!mounted) return
+				setAuthEmail(user.email ?? null)
+				const uid = uidParam || user.id
+				await loadAll(uid, user.email ?? null)
+			} catch (e: any) {
+				if (mounted) setErr(e?.message ?? 'Error cargando los datos')
+			} finally {
+				if (mounted) setLoading(false)
+			}
+		})()
 		return () => { mounted = false }
 	}, [uidParam, nav, loadAll])
 
@@ -301,22 +304,24 @@ export default function LoginPage() {
 						)}
 					</article>
 
-					{/* DERECHA: Datos (tabs) */}
+					{/* DERECHA: Datos */}
 					<article className="loginp-card loginp-card--data">
 						<div className="loginp-tabs">
-							<button className={`loginp-tab ${tab === 'pedidos' ? 'is-active' : ''}`} onClick={() => setTab('pedidos')} type="button">Mis pedidos</button>
+							{/* <button className={`loginp-tab ${tab === 'pedidos' ? 'is-active' : ''}`} onClick={() => setTab('pedidos')} type="button">Mis pedidos</button> */}
 							<button className={`loginp-tab ${tab === 'reservas' ? 'is-active' : ''}`} onClick={() => setTab('reservas')} type="button">Mis reservas</button>
 							<button className={`loginp-tab ${tab === 'actividades' ? 'is-active' : ''}`} onClick={() => setTab('actividades')} type="button">Mis actividades</button>
 						</div>
 
-						{tab === 'pedidos' && (<PedidosList items={pedidos} fmtDate={fmtDate} />)}
-						{tab === 'reservas' && (<ReservasList items={reservas} fmtDate={fmtDate} rangeDates={rangeDates} />)}
-						{tab === 'actividades' && (<ActividadesList items={actividades} fmtDate={fmtDate} />)}
+						<div className="loginp-scroll">
+							{tab === 'pedidos' && (<PedidosList items={pedidos} fmtDate={fmtDate} />)}
+							{tab === 'reservas' && (<ReservasList items={reservas} fmtDate={fmtDate} rangeDates={rangeDates} />)}
+							{/* ✅ Ahora coincide el tipo */}
+							{tab === 'actividades' && (<ActividadesList items={actividades} fmtDate={fmtDate} />)}
+						</div>
 					</article>
 				</div>
 			</section>
 
-			{/* MODAL de edición */}
 			{perfil && (
 				<EditProfileModal
 					open={modalOpen}
